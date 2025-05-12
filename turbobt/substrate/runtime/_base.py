@@ -1,0 +1,9 @@
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..client import Substrate
+
+
+class SubstrateRuntime:
+    def __init__(self, substrate: "Substrate"):
+        self.substrate = substrate

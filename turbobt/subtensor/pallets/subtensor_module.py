@@ -1,0 +1,149 @@
+import typing
+import ipaddress
+
+import bittensor_wallet
+
+from ...substrate.extrinsic import ExtrinsicResult
+from ..types import (
+    HotKey,
+    NetUid,
+    Uid,
+)
+from ._base import Pallet
+from ._types import StorageDoubleMap
+
+if typing.TYPE_CHECKING:
+    from .. import Subtensor
+
+
+class ZippedWeights(typing.NamedTuple):
+    uid: Uid
+    weight: int
+
+
+class SubtensorModule(Pallet):
+    def __init__(self, subtensor: "Subtensor"):
+        super().__init__(subtensor)
+
+        self.CRV3WeightCommits = StorageDoubleMap[NetUid, None, None](
+            subtensor,
+            "SubtensorModule",
+            "CRV3WeightCommits",
+        )
+        self.Uids = StorageDoubleMap[NetUid, HotKey, Uid](
+            subtensor,
+            "SubtensorModule",
+            "Uids",
+        )
+        self.Weights = StorageDoubleMap[NetUid, Uid, list[ZippedWeights]](
+            subtensor,
+            "SubtensorModule",
+            "Weights",
+        )
+
+    async def burned_register(
+        self,
+        netuid: int,
+        hotkey: str,
+        wallet: bittensor_wallet.Wallet,
+    ) -> ExtrinsicResult:
+        """
+        Registers a neuron on the Bittensor network by recycling TAO.
+
+        :param netuid: The unique identifier of the subnet.
+        :type netuid: int
+        :param hotkey: Hotkey to be registered to the network.
+        :type hotkey: str
+        :param wallet: The wallet associated with the neuron to be registered.
+        :type wallet: 
+        :return: An asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "burned_register",
+            {
+                "netuid": netuid,
+                "hotkey": hotkey,
+            },
+            wallet=wallet,
+        )
+
+    async def commit_crv3_weights(
+        self,
+        netuid: int,
+        commit: bytes,
+        reveal_round: int,
+        wallet: bittensor_wallet.Wallet,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "commit_crv3_weights",
+            {
+                "netuid": netuid,
+                "commit": f"0x{commit.hex()}",
+                "reveal_round": reveal_round,
+            },
+            wallet=wallet,
+        )
+
+    async def register_network(
+        self,
+        hotkey: bittensor_wallet.Keypair,
+        mechid: int,
+        wallet: bittensor_wallet.Wallet,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "register_network",
+            {
+                "hotkey": hotkey,
+                "mechid": mechid,
+            },
+            wallet=wallet,
+        )
+
+    async def serve_axon(
+        self,
+        netuid: int,
+        ip: str,
+        port: int,
+        wallet: bittensor_wallet.Wallet,
+        certificate: bytes,
+    ) -> ExtrinsicResult:
+        """
+        Submits an extrinsic to serve an Axon endpoint on the Bittensor network.
+
+        :param netuid: The unique identifier of the subnet.
+        :type netuid: int
+        :param ip: The IP address of the Axon endpoint.
+        :type ip: str
+        :param port: The port number for the Axon endpoint.
+        :type port: int
+        :param wallet: The wallet associated with the Axon service.
+        :type wallet: bittensor_wallet.Wallet
+        :param certificate: The certificate for securing the Axon endpoint.
+        :type certificate: bytes
+        :return: An asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        ip_address = ipaddress.ip_address(ip)
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "serve_axon",
+            {
+                "certificate": certificate,
+                "ip_type": ip_address.version,
+                "ip": int(ip_address),
+                "netuid": netuid,
+                "placeholder1": 0,
+                "placeholder2": 0,
+                "port": port,
+                "protocol": 4,
+                "version": 1,    # TODO version_as_int
+            },
+            wallet=wallet,
+        )

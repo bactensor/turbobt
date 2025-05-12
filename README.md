@@ -1,2 +1,2 @@
 # turbobt
-Turbo Bittensor SDK
+A next generation Bittensor SDK, for Python 3.
