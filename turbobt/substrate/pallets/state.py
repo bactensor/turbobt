@@ -107,9 +107,9 @@ class State(Pallet):
         """
         Returns the keys with prefix from a child storage with pagination support.
 
-        :param storage_key: The key prefix to retrieve matching keys from.
-        :type storage_key: str
-        :param params: Description
+        :param key: The storage name.
+        :type key: str
+        :param params: Parts of Storage Key for which you want to retrieve the storage data.
         :type params: 
         :param count: The number of results to include per page.
         :type count: int
@@ -151,12 +151,10 @@ class State(Pallet):
     ):
         """
         Returns a child storage entry at a specific block state.
-        
-        :param self: Description
-        :type self: 
-        :param key: The key for which you want to retrieve the storage data.
+
+        :param key: The storage name.
         :type key: str
-        :param params: Description
+        :param params: Parts of Storage Key for which you want to retrieve the storage data.
         :type params: 
         :param block_hash: The hash of a specific block in the chain.
         :type block_hash: 
@@ -202,9 +200,7 @@ class State(Pallet):
     ) -> list[StorageChangeSet]:
         """
         Query storage entries (by key) starting at block hash given as the second parameter.
-        
-        :param self: Description
-        :type self: 
+
         :param keys: An array representing the key or keys for which you want to retrieve storage entries.
         :type keys: list[str]
         :param block_hash: The hash of a specific block in the chain.
