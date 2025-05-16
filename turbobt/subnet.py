@@ -156,13 +156,11 @@ class SubnetNeurons:
         )
 
         # https://github.com/opentensor/subtensor/blob/main/pallets/subtensor/src/epoch/math.rs#L235
-        stakes = (
+        stakes = sorted(
             (total_stake, hotkey)
             for hotkey, total_stake in zip(state["hotkeys"], state["total_stake"])
             if total_stake >= stake_threshold
         )
-        stakes = sorted(stakes)
-        stakes = list(stakes)
         stakes = stakes[-hyperparameters["max_validators"] :]
         stakes, hotkeys = zip(*stakes)
 
