@@ -2,7 +2,7 @@ import dataclasses
 import ipaddress
 import typing
 
-from .substrate._scalecodec import u16_proportion_to_fixed
+from .substrate._scalecodec import u16_proportion_to_float
 
 if typing.TYPE_CHECKING:
     from .subnet import Subnet
@@ -86,20 +86,20 @@ class Neuron:
             active=neuron["active"],
             axon_info=AxonInfo.from_dict(neuron["axon_info"]),
             coldkey=neuron["coldkey"],
-            consensus=u16_proportion_to_fixed(neuron["consensus"]),
-            dividends=u16_proportion_to_fixed(neuron["dividends"]),
+            consensus=u16_proportion_to_float(neuron["consensus"]),
+            dividends=u16_proportion_to_float(neuron["dividends"]),
             emission=neuron["emission"] / 1e9,  # TODO
             hotkey=neuron["hotkey"],
-            incentive=u16_proportion_to_fixed(neuron["incentive"]),
+            incentive=u16_proportion_to_float(neuron["incentive"]),
             last_update=neuron["last_update"],
             prometheus_info=PrometheusInfo.from_dict(neuron["prometheus_info"]),
             pruning_score=neuron["pruning_score"],
-            rank=u16_proportion_to_fixed(neuron["rank"]),
+            rank=u16_proportion_to_float(neuron["rank"]),
             stake=next(value / 1_000_000_000 for value in neuron["stake"].values()),
-            trust=u16_proportion_to_fixed(neuron["trust"]),
+            trust=u16_proportion_to_float(neuron["trust"]),
             uid=neuron["uid"],
             validator_permit=neuron["validator_permit"],
-            validator_trust=u16_proportion_to_fixed(neuron["validator_trust"]),
+            validator_trust=u16_proportion_to_float(neuron["validator_trust"]),
         )
 
     def __hash__(self):

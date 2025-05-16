@@ -1,7 +1,7 @@
 import typing
 import scalecodec.utils.ss58
 
-from ...substrate._scalecodec import u16_proportion_to_fixed
+from ...substrate._scalecodec import u16_proportion_to_float
 from ._base import RuntimeApi
 
 
@@ -100,7 +100,7 @@ class SubnetInfoRuntimeApi(RuntimeApi):
         )
         # TODO min_allowed_weights
         # TODO int/float?
-        hyperparameters["max_weights_limit"] = u16_proportion_to_fixed(
+        hyperparameters["max_weights_limit"] = u16_proportion_to_float(
             hyperparameters["max_weights_limit"],
         )
 

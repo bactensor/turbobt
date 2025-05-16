@@ -1,11 +1,11 @@
 U16_MAX = (1 << 16) - 1
 
 
-def u16_proportion_to_fixed(x: int) -> float:
+def u16_proportion_to_float(x: int) -> float:
     return x / U16_MAX
 
 
-def fixed_to_u16_proportion(x: float) -> int:
+def float_to_u16_proportion(x: float) -> int:
     return round(x * U16_MAX)
 
 

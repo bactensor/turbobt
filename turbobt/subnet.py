@@ -14,8 +14,8 @@ from .neuron import (
     NeuronReference,
 )
 from .substrate._scalecodec import (
-    fixed_to_u16_proportion,
-    u16_proportion_to_fixed,
+    float_to_u16_proportion,
+    u16_proportion_to_float,
 )
 
 if typing.TYPE_CHECKING:
@@ -224,7 +224,7 @@ class SubnetWeights:
         if not weights:
             return {}
 
-        return {uid: u16_proportion_to_fixed(weight) for uid, weight in weights}
+        return {uid: u16_proportion_to_float(weight) for uid, weight in weights}
 
     async def fetch(self, block_hash=None) -> dict[Uid, dict[Uid, float]]:
         weights = await self.client.subtensor.subtensor_module.Weights.query(
@@ -237,7 +237,7 @@ class SubnetWeights:
 
         return {
             validator_uid: {
-                uid: u16_proportion_to_fixed(weight) for uid, weight in zipped_weights
+                uid: u16_proportion_to_float(weight) for uid, weight in zipped_weights
             }
             for validator_uid, zipped_weights in weights
         }
@@ -275,7 +275,7 @@ class SubnetWeights:
         max_weight = max(weights.values())
 
         return {
-            uid: fixed_to_u16_proportion(weight / max_weight)
+            uid: float_to_u16_proportion(weight / max_weight)
             for uid, weight in weights.items()
         }
 
