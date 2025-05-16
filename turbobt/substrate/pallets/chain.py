@@ -27,7 +27,7 @@ class SignedBlock(typing.TypedDict):
 
 
 class Chain(Pallet):
-    async def getBlock(self, block_hash) -> SignedBlock:
+    async def getBlock(self, block_hash: str | None = None) -> SignedBlock:
         """
         Get header and body of a relay chain block.
 
@@ -58,17 +58,22 @@ class Chain(Pallet):
         return result
 
     # TODO accepts list of numbers? Option<ListOrValue<NumberOrHex>>
-    async def getBlockHash(self, block_number: int | None = None) -> bytearray:
+    async def getBlockHash(self, block_number: int | None = None) -> str | None:
         """
         Get the block hash for a specific block.
         """
 
-        return await self.substrate.rpc(
+        block_hash = await self.substrate.rpc(
             method="chain_getBlockHash",
             params={
                 "hash": block_number,
             },
         )
+
+        if not block_hash:
+            return None
+
+        return f"0x{block_hash.hex()}"
 
     async def getHeader(self, block_hash=None) -> Header:
         """

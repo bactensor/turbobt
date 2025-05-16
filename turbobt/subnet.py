@@ -10,7 +10,7 @@ import scalecodec.utils.ss58
 
 from turbobt.subtensor.types import HotKey, Uid
 
-from .block import get_block
+from .block import get_ctx_block_hash
 from .neuron import (
     Neuron,
     NeuronReference,
@@ -36,11 +36,11 @@ class SubnetCommitments:
         self.subnet = subnet
         self.client = client
 
-    async def get(self, hotkey: str, block_hash=None):
+    async def get(self, hotkey: str, block_hash: str | None = None) -> bytes | None:
         commitmens = await self.client.subtensor.commitments.CommitmentOf.get(
             self.subnet.netuid,
             hotkey,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if not commitmens:
@@ -52,10 +52,10 @@ class SubnetCommitments:
             for value in field.values()
         )
 
-    async def fetch(self, block_hash=None) -> dict[str, bytes]:
+    async def fetch(self, block_hash: str | None = None) -> dict[str, bytes]:
         commitments = await self.client.subtensor.commitments.CommitmentOf.query(
             self.subnet.netuid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if not commitments:
@@ -121,13 +121,10 @@ class SubnetNeurons:
         async with asyncio.timeout(60):
             await extrinsic.wait_for_finalization()
 
-    async def all(self, block_hash=None) -> list[Neuron]:
-        if not block_hash:
-            block_hash = get_block()
-
+    async def all(self, block_hash: str | None = None) -> list[Neuron]:
         neurons = await self.subnet.client.subtensor.neuron_info.get_neurons_lite(
             self.subnet.netuid,
-            block_hash=block_hash,
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if neurons is None:
@@ -141,9 +138,9 @@ class SubnetNeurons:
             for neuron in neurons
         ]
 
-    async def validators(self, block_hash=None) -> list[Neuron]:
+    async def validators(self, block_hash: str | None = None) -> list[Neuron]:
         if not block_hash:
-            block_hash = get_block()
+            block_hash = get_ctx_block_hash()
 
         if not block_hash:
             block_hash = await self.subnet.client.subtensor.chain.getBlockHash()
@@ -154,7 +151,7 @@ class SubnetNeurons:
             self.subnet.get_hyperparameters(block_hash),
             self.subnet.client.subtensor.state.getStorage(
                 "SubtensorModule.StakeThreshold",
-                block_hash=f"0x{block_hash.hex()}",
+                block_hash=block_hash,
             ),
         )
 
@@ -216,11 +213,11 @@ class SubnetWeights:
 
         return reveal_round
 
-    async def get(self, uid: int, block_hash=None) -> dict[Uid, float]:
+    async def get(self, uid: int, block_hash: str | None = None) -> dict[Uid, float]:
         weights = await self.client.subtensor.subtensor_module.Weights.get(
             self.subnet.netuid,
             uid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if not weights:
@@ -228,10 +225,10 @@ class SubnetWeights:
 
         return {uid: u16_proportion_to_float(weight) for uid, weight in weights}
 
-    async def fetch(self, block_hash=None) -> dict[Uid, dict[Uid, float]]:
+    async def fetch(self, block_hash: str | None = None) -> dict[Uid, dict[Uid, float]]:
         weights = await self.client.subtensor.subtensor_module.Weights.query(
             self.subnet.netuid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if not weights:
@@ -246,7 +243,7 @@ class SubnetWeights:
 
     async def fetch_pending(
         self,
-        block_hash=None,
+        block_hash: str | None = None,
     ) -> dict[
         int,
         dict[
@@ -256,7 +253,7 @@ class SubnetWeights:
     ]:
         weights = await self.client.subtensor.subtensor_module.CRV3WeightCommits.query(
             self.subnet.netuid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if not weights:
@@ -293,10 +290,10 @@ class SubnetReference:
         self.neurons = SubnetNeurons(self)
         self.weights = SubnetWeights(self)
 
-    async def get(self, block_hash=None):
+    async def get(self, block_hash: str | None = None):
         dynamic_info = await self.client.subtensor.subnet_info.get_dynamic_info(
             self.netuid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
         if not dynamic_info:
@@ -315,16 +312,16 @@ class SubnetReference:
 
         return subnet
 
-    async def get_hyperparameters(self, block_hash=None) -> dict:
+    async def get_hyperparameters(self, block_hash: str | None = None) -> dict:
         return await self.client.subtensor.subnet_info.get_subnet_hyperparams(
             self.netuid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
-    async def get_state(self, block_hash=None):
+    async def get_state(self, block_hash: str | None = None):
         return await self.client.subtensor.subnet_info.get_subnet_state(
             self.netuid,
-            block_hash=block_hash or get_block(),
+            block_hash=block_hash or get_ctx_block_hash(),
         )
 
     async def list_neurons(self) -> list[Neuron]:

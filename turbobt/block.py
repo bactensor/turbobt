@@ -7,13 +7,14 @@ if typing.TYPE_CHECKING:
     from .client import Bittensor
 
 
-_block = contextvars.ContextVar(
-    "block",
+_block_hash = contextvars.ContextVar(
+    "block_hash",
     default=None,
 )
 
-def get_block():
-    return _block.get()
+
+def get_ctx_block_hash() -> str | None:
+    return _block_hash.get()
 
 
 class Block:
@@ -40,7 +41,7 @@ class Block:
 
             block_hash = await self.client.subtensor.chain.getBlockHash(block_number)
 
-        self.token = _block.set(block_hash)
+        self._token = _block_hash.set(block_hash)
 
         return Block(
             block_hash=block_hash,
@@ -49,7 +50,7 @@ class Block:
         )
 
     async def __aexit__(self, *args, **kwargs):
-        _block.reset(self.token)
+        _block_hash.reset(self._token)
 
     async def wait(self):
         if self.number is None or self.number == -1:
@@ -81,6 +82,6 @@ class Blocks:
         block_hash = await self.client.subtensor.chain.getBlockHash()
 
         return Block(
-            f"0x{block_hash.hex()}",
+            block_hash=block_hash,
             client=self.client,
         )
