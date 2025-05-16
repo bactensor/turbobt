@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 import ipaddress
 
@@ -22,7 +24,7 @@ class ZippedWeights(typing.NamedTuple):
 
 
 class SubtensorModule(Pallet):
-    def __init__(self, subtensor: "Subtensor"):
+    def __init__(self, subtensor: Subtensor):
         super().__init__(subtensor)
 
         self.CRV3WeightCommits = StorageDoubleMap[NetUid, None, None](

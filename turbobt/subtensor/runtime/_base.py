@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 if typing.TYPE_CHECKING:
@@ -5,5 +7,5 @@ if typing.TYPE_CHECKING:
 
 
 class RuntimeApi:
-    def __init__(self, subtensor: "Subtensor"):
+    def __init__(self, subtensor: Subtensor):
         self.subtensor = subtensor

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import typing
 
@@ -19,7 +21,7 @@ class ExtrinsicResult:
         self,
         extrinsic: scalecodec.types.GenericExtrinsic,
         subscription: Subscription,
-        substrate: "Substrate",
+        substrate: Substrate,
     ):
         self.extrinsic = extrinsic
         self.subscription = subscription

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 import scalecodec
@@ -15,7 +17,7 @@ V = typing.TypeVar("V")
 
 
 class StorageDoubleMap(typing.Generic[K1, K2, V]):
-    def __init__(self, subtensor: "Subtensor", module: str, storage: str):
+    def __init__(self, subtensor: Subtensor, module: str, storage: str):
         self.subtensor = subtensor
         self.module = module
         self.storage = storage

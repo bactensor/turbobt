@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 import bittensor_wallet
@@ -25,7 +27,7 @@ class Registration(typing.TypedDict):
 
 
 class Commitments(Pallet):
-    def __init__(self, subtensor: "Subtensor"):
+    def __init__(self, subtensor: Subtensor):
         super().__init__(subtensor)
 
         self.CommitmentOf = StorageDoubleMap[NetUid, HotKey, Registration](

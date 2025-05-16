@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 if typing.TYPE_CHECKING:
@@ -5,5 +7,5 @@ if typing.TYPE_CHECKING:
 
 
 class Pallet:
-    def __init__(self, substrate: "Substrate"):
+    def __init__(self, substrate: Substrate):
         self.substrate = substrate

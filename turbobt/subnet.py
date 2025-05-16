@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import dataclasses
 import typing
@@ -30,7 +32,7 @@ BITTENSOR_VERSION_INT = sum(
 
 
 class SubnetCommitments:
-    def __init__(self, subnet: "Subnet", client: "Bittensor"):
+    def __init__(self, subnet: Subnet, client: Bittensor):
         self.subnet = subnet
         self.client = client
 
@@ -89,7 +91,7 @@ class SubnetCommitments:
 
 
 class SubnetNeurons:
-    def __init__(self, subnet: "Subnet"):
+    def __init__(self, subnet: Subnet):
         self.subnet = subnet
 
     def __getitem__(self, key: int | str) -> NeuronReference:
@@ -179,7 +181,7 @@ class WeightsCommited(typing.NamedTuple):
 
 
 class SubnetWeights:
-    def __init__(self, subnet: "SubnetReference"):
+    def __init__(self, subnet: SubnetReference):
         self.subnet = subnet
         self.client = subnet.client
 
@@ -284,7 +286,7 @@ class SubnetWeights:
 class SubnetReference:
     netuid: int
 
-    client: "Bittensor" = dataclasses.field(compare=False, repr=False)
+    client: Bittensor = dataclasses.field(compare=False, repr=False)
 
     def __post_init__(self):
         self.commitments = SubnetCommitments(self, self.client)
@@ -350,7 +352,7 @@ class Subnet(SubnetReference):
 
 
 class Subnets:
-    def __init__(self, client: "Bittensor"):
+    def __init__(self, client: Bittensor):
         self.client = client
 
     def __getitem__(self, netuid) -> SubnetReference:

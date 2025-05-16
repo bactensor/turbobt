@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import dataclasses
 import ipaddress
 import typing
@@ -20,7 +22,7 @@ class AxonInfo:
     # placeholder2: int
 
     @classmethod
-    def from_dict(cls, axon_info) -> "AxonInfo":
+    def from_dict(cls, axon_info) -> AxonInfo:
         return cls(
             # block=axon_info["block"],
             # version=axon_info["version"],
@@ -42,7 +44,7 @@ class PrometheusInfo:
     # ip_type: int
 
     @classmethod
-    def from_dict(cls, prometheus_info) -> "PrometheusInfo":
+    def from_dict(cls, prometheus_info) -> PrometheusInfo:
         return cls(
             # block=prometheus_info["block"],
             # version=prometheus_info["version"],
@@ -57,7 +59,7 @@ class PrometheusInfo:
     order=True,
 )
 class Neuron:
-    subnet: "Subnet"
+    subnet: Subnet
     # netuid: int
     uid: int
     coldkey: str
@@ -79,7 +81,7 @@ class Neuron:
     pruning_score: int
 
     @classmethod
-    def from_dict(cls, neuron: dict, *, subnet: "Subnet"):
+    def from_dict(cls, neuron: dict, *, subnet: Subnet):
         return cls(
             subnet=subnet,
             # netuid=neuron["netuid"],
@@ -108,7 +110,7 @@ class Neuron:
 
 @dataclasses.dataclass
 class NeuronReference:
-    subnet: "Subnet"
+    subnet: Subnet
     uid: int | None = None
     hotkey: str | None = None
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextvars
 import typing
 
@@ -20,7 +22,7 @@ class Block:
         block_number: int | None = None,
         block_hash: str | None = None,
         *,
-        client: "Bittensor",
+        client: Bittensor,
     ):
         self.number = block_number
         self.hash = block_hash
@@ -57,7 +59,7 @@ class Block:
 
 
 class Blocks:
-    def __init__(self, client: "Bittensor"):
+    def __init__(self, client: Bittensor):
         self.client = client
 
     def __getitem__(self, key: int | str):
