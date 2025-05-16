@@ -37,18 +37,18 @@ class SubnetCommitments:
         self.client = client
 
     async def get(self, hotkey: str, block_hash: str | None = None) -> bytes | None:
-        commitmens = await self.client.subtensor.commitments.CommitmentOf.get(
+        commitments = await self.client.subtensor.commitments.CommitmentOf.get(
             self.subnet.netuid,
             hotkey,
             block_hash=block_hash or get_ctx_block_hash(),
         )
 
-        if not commitmens:
+        if not commitments:
             return None
 
         return next(
             bytes.fromhex(value[2:])
-            for field in commitmens["info"]["fields"]
+            for field in commitments["info"]["fields"]
             for value in field.values()
         )
 
