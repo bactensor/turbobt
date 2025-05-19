@@ -18,6 +18,11 @@ if typing.TYPE_CHECKING:
     from .. import Subtensor
 
 
+class NeuronCertificate(typing.TypedDict):
+    algorithm: int
+    public_key: str
+
+
 class ZippedWeights(typing.NamedTuple):
     uid: Uid
     weight: int
@@ -31,6 +36,11 @@ class SubtensorModule(Pallet):
             subtensor,
             "SubtensorModule",
             "CRV3WeightCommits",
+        )
+        self.NeuronCertificates = StorageDoubleMap[NetUid, HotKey, NeuronCertificate](
+            subtensor,
+            "SubtensorModule",
+            "NeuronCertificates",
         )
         self.Uids = StorageDoubleMap[NetUid, HotKey, Uid](
             subtensor,

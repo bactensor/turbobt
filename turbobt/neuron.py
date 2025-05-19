@@ -7,6 +7,8 @@ import typing
 from .substrate._scalecodec import u16_proportion_to_float
 
 if typing.TYPE_CHECKING:
+    from turbobt.subtensor.pallets.subtensor_module import NeuronCertificate
+
     from .subnet import Subnet
 
 
@@ -139,3 +141,10 @@ class NeuronReference:
         )
 
         return neuron
+
+    async def get_certificate(self, block_hash: str | None = None) -> NeuronCertificate | None:
+        return await self.subnet.client.subtensor.subtensor_module.NeuronCertificates.get(
+            self.subnet.netuid,
+            self.hotkey,
+            block_hash=block_hash,
+        )
