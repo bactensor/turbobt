@@ -112,7 +112,53 @@ class SubtensorModule(Pallet):
         ip: str,
         port: int,
         wallet: bittensor_wallet.Wallet,
+        protocol: int = 4,
+        placeholder1: int = 0,
+        placeholder2: int = 0,
+    ) -> ExtrinsicResult:
+        """
+        Submits an extrinsic to serve an Axon endpoint on the Bittensor network.
+
+        :param netuid: The unique identifier of the subnet.
+        :type netuid: int
+        :param ip: The IP address of the Axon endpoint.
+        :type ip: str
+        :param port: The port number for the Axon endpoint.
+        :type port: int
+        :param wallet: The wallet associated with the Axon service.
+        :type wallet: bittensor_wallet.Wallet
+        :return: An asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        ip_address = ipaddress.ip_address(ip)
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "serve_axon",
+            {
+                "ip_type": ip_address.version,
+                "ip": int(ip_address),
+                "netuid": netuid,
+                "placeholder1": placeholder1,
+                "placeholder2": placeholder2,
+                "port": port,
+                "protocol": protocol,
+                "version": 1,    # TODO version_as_int
+            },
+            wallet=wallet,
+        )
+
+    async def serve_axon_tls(
+        self,
+        netuid: int,
+        ip: str,
+        port: int,
         certificate: bytes,
+        wallet: bittensor_wallet.Wallet,
+        protocol: int = 4,
+        placeholder1: int = 0,
+        placeholder2: int = 0,
     ) -> ExtrinsicResult:
         """
         Submits an extrinsic to serve an Axon endpoint on the Bittensor network.
@@ -135,16 +181,16 @@ class SubtensorModule(Pallet):
 
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
-            "serve_axon",
+            "serve_axon_tls",
             {
                 "certificate": certificate,
                 "ip_type": ip_address.version,
                 "ip": int(ip_address),
                 "netuid": netuid,
-                "placeholder1": 0,
-                "placeholder2": 0,
+                "placeholder1": placeholder1,
+                "placeholder2": placeholder2,
                 "port": port,
-                "protocol": 4,
+                "protocol": protocol,
                 "version": 1,    # TODO version_as_int
             },
             wallet=wallet,

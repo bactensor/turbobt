@@ -121,6 +121,34 @@ class SubnetNeurons:
         async with asyncio.timeout(60):
             await extrinsic.wait_for_finalization()
 
+    async def serve(
+        self,
+        ip: str,
+        port: int,
+        certificate: bytes | None = None,
+        timeout: float | None = None,
+        wallet: bittensor_wallet.Wallet | None = None,
+    ):
+        if certificate:
+            extrinsic = await self.subnet.client.subtensor.subtensor_module.serve_axon_tls(
+                certificate=certificate,
+                ip=ip,
+                netuid=self.subnet.netuid,
+                port=port,
+                wallet=wallet or self.subnet.client.wallet,
+            )
+        else:
+            extrinsic = await self.subnet.client.subtensor.subtensor_module.serve_axon(
+                certificate=certificate,
+                ip=ip,
+                netuid=self.subnet.netuid,
+                port=port,
+                wallet=wallet or self.subnet.client.wallet,
+            )
+
+        async with asyncio.timeout(timeout):
+            await extrinsic.wait_for_finalization()
+
     async def all(self, block_hash: str | None = None) -> list[Neuron]:
         neurons = await self.subnet.client.subtensor.neuron_info.get_neurons_lite(
             self.subnet.netuid,
