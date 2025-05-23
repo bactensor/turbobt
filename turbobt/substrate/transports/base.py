@@ -11,6 +11,18 @@ __all__ = [
 ]
 
 
+class Timeout:
+    def __init__(
+        self,
+        connect: float | None = None,
+        read: float | None = None,
+        write: float | None = None,
+    ):
+        self.connect = connect
+        self.read = read
+        self.write = write
+
+
 class BaseTransport:
     async def __aenter__(self: T) -> T:
         return self

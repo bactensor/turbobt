@@ -8,7 +8,7 @@ import types
 import websockets.asyncio.client
 
 from .._models import Request, Response
-from .base import BaseTransport
+from .base import BaseTransport, Timeout
 
 T = typing.TypeVar("T", bound="WebSocketTransport")
 
@@ -22,16 +22,23 @@ class WebSocketTransport(BaseTransport):
         self,
         uri: str,
         retries: int = 0,
+        timeout: Timeout = Timeout(
+            connect=15.0,
+            read=60.0,
+            write=5.0,
+        ),
         **kwargs,
     ):
         self.__connections = self._connections_generator(
             websockets.asyncio.client.connect(
                 uri,
+                open_timeout=timeout.connect,
                 **kwargs,
             ),
         )
 
         self._retries = retries
+        self._timeout = timeout
         self._futures: dict[int, asyncio.Future] = {}
         self._subscriptions: dict[str, asyncio.Queue] = {}
 
@@ -153,18 +160,20 @@ class WebSocketTransport(BaseTransport):
             self._futures[future_id] = future
 
             async with self.connected() as connection:
-                await connection.send(
-                    json.dumps(
-                        {
-                            "method": request.method,
-                            "params": request.params,
-                            "id": future_id,
-                            "jsonrpc": "2.0",
-                        }
-                    ),
-                )
+                async with asyncio.timeout(self._timeout.write):
+                    await connection.send(
+                        json.dumps(
+                            {
+                                "method": request.method,
+                                "params": request.params,
+                                "id": future_id,
+                                "jsonrpc": "2.0",
+                            }
+                        ),
+                    )
 
-            response = await future
+            async with asyncio.timeout(self._timeout.read):
+                response = await future
 
             if "error" in response:
                 return Response(
