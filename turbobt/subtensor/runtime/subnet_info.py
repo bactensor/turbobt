@@ -98,6 +98,10 @@ class SubnetInfoRuntimeApi(RuntimeApi):
             netuid=netuid,
             block_hash=block_hash,
         )
+
+        if not hyperparameters:
+            return None
+
         # TODO min_allowed_weights
         # TODO int/float?
         hyperparameters["max_weights_limit"] = u16_proportion_to_float(
