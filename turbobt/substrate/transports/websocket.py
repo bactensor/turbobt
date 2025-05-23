@@ -177,11 +177,9 @@ class WebSocketTransport(BaseTransport):
                 request=request,
                 result=response["result"],
             )
-        except Exception as e:
-            future.set_exception(e)
+        except Exception:
             del self._futures[future_id]
-            # TODO raise?
-            return await future
+            raise
 
     async def close(self):
         await self.__connections.aclose()
