@@ -63,7 +63,7 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
                 raise NotImplementedError(param_hashers[n])
 
             key_type_string.append(
-                f"[u8; {hasher.length}]"
+                f"[u8; {hasher.hash_length}]"
             )
             key_type_string.append(param_types[n])
 

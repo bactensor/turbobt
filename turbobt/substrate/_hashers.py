@@ -6,7 +6,7 @@ import xxhash
 
 class Hasher(typing.NamedTuple):
     function: typing.Callable
-    length: int
+    hash_length: int
 
 
 def blake2_128_concat(data: bytearray) -> bytes:
