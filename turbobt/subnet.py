@@ -137,6 +137,7 @@ class SubnetNeurons:
                 netuid=self.subnet.netuid,
                 port=port,
                 protocol=AxonProtocolEnum.HTTP,
+                version=BITTENSOR_VERSION_INT,
                 wallet=wallet or self.subnet.client.wallet,
             )
         else:
@@ -145,6 +146,7 @@ class SubnetNeurons:
                 netuid=self.subnet.netuid,
                 port=port,
                 protocol=AxonProtocolEnum.HTTP,
+                version=BITTENSOR_VERSION_INT,
                 wallet=wallet or self.subnet.client.wallet,
             )
 

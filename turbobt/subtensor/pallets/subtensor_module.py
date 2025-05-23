@@ -123,6 +123,7 @@ class SubtensorModule(Pallet):
         port: int,
         wallet: bittensor_wallet.Wallet,
         protocol: int,
+        version: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
     ) -> ExtrinsicResult:
@@ -137,6 +138,8 @@ class SubtensorModule(Pallet):
         :type port: int
         :param wallet: The wallet associated with the Axon service.
         :type wallet: bittensor_wallet.Wallet
+        :param version: The Bittensor version identifier.
+        :type version: int
         :param placeholder1: Placeholder for further extra params.
         :type placeholder1: int
         :param placeholder2: Placeholder for further extra params.
@@ -158,7 +161,7 @@ class SubtensorModule(Pallet):
                 "placeholder2": placeholder2,
                 "port": port,
                 "protocol": protocol,
-                "version": 1,    # TODO version_as_int
+                "version": version,
             },
             wallet=wallet,
         )
@@ -171,6 +174,7 @@ class SubtensorModule(Pallet):
         certificate: bytes,
         wallet: bittensor_wallet.Wallet,
         protocol: int,
+        version: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
     ) -> ExtrinsicResult:
@@ -189,6 +193,8 @@ class SubtensorModule(Pallet):
         :type certificate: bytes
         :param protocol: Axon protocol. TCP, UDP, other.
         :type protocol: int
+        :param version: The Bittensor version identifier.
+        :type version: int
         :param placeholder1: Placeholder for further extra params.
         :type placeholder1: int
         :param placeholder2: Placeholder for further extra params.
@@ -211,7 +217,7 @@ class SubtensorModule(Pallet):
                 "placeholder2": placeholder2,
                 "port": port,
                 "protocol": protocol,
-                "version": 1,    # TODO version_as_int
+                "version": version,
             },
             wallet=wallet,
         )
