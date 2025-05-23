@@ -182,6 +182,12 @@ class WebSocketTransport(BaseTransport):
             raise
 
     async def close(self):
+        for future in self._futures.values():
+            future.cancel()
+
+        self._futures.clear()
+        self._subscriptions.clear()
+
         await self.__connections.aclose()
 
     def subscribe(self, subscription_id) -> asyncio.Queue:
