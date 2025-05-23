@@ -30,13 +30,19 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             block_hash=block_hash,
         )
 
-    async def query(self, *args, block_hash=None):
+    async def query(
+        self,
+        *args,
+        count: int = 100,
+        start_key: str = "",
+        block_hash: str = None,
+    ):
         keys = await self.subtensor.state.getKeysPaged(
             f"{self.module}.{self.storage}",
             *args,
-            count=100,  # TODO param
-            # TODO start_key
             block_hash=block_hash,
+            count=count,
+            start_key=start_key,
         )
         results = await self.subtensor.state.queryStorageAt(
             keys,
