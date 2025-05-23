@@ -122,7 +122,7 @@ class SubtensorModule(Pallet):
         ip: str,
         port: int,
         wallet: bittensor_wallet.Wallet,
-        protocol: int = 4,
+        protocol: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
     ) -> ExtrinsicResult:
@@ -170,7 +170,7 @@ class SubtensorModule(Pallet):
         port: int,
         certificate: bytes,
         wallet: bittensor_wallet.Wallet,
-        protocol: int = 4,
+        protocol: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
     ) -> ExtrinsicResult:

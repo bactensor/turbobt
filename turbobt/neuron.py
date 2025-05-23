@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import enum
 import ipaddress
 import typing
 
@@ -12,6 +13,14 @@ if typing.TYPE_CHECKING:
     from .subnet import Subnet
 
 
+class AxonProtocolEnum(enum.IntEnum):
+    # https://github.com/opentensor/subtensor/blob/a1bf521444a80c86c37f1573af2e8860700c0b79/pallets/subtensor/src/subnets/serving.rs#L26
+
+    TCP = 0
+    UDP = 1
+    HTTP = 4  # ?
+
+
 @dataclasses.dataclass
 class AxonInfo:
     # block: int
@@ -19,7 +28,7 @@ class AxonInfo:
     ip: ipaddress.IPv4Address | ipaddress.IPv6Address
     port: int
     # ip_type: int
-    protocol: int
+    protocol: AxonProtocolEnum
     # placeholder1: int
     # placeholder2: int
 

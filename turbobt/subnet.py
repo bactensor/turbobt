@@ -12,6 +12,7 @@ from turbobt.subtensor.types import HotKey, Uid
 
 from .block import get_ctx_block_hash
 from .neuron import (
+    AxonProtocolEnum,
     Neuron,
     NeuronReference,
 )
@@ -135,6 +136,7 @@ class SubnetNeurons:
                 ip=ip,
                 netuid=self.subnet.netuid,
                 port=port,
+                protocol=AxonProtocolEnum.HTTP,
                 wallet=wallet or self.subnet.client.wallet,
             )
         else:
@@ -142,6 +144,7 @@ class SubnetNeurons:
                 ip=ip,
                 netuid=self.subnet.netuid,
                 port=port,
+                protocol=AxonProtocolEnum.HTTP,
                 wallet=wallet or self.subnet.client.wallet,
             )
 
