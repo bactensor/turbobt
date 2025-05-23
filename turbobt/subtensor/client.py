@@ -24,6 +24,11 @@ class Subtensor(Substrate):
         *args,
         **kwargs,
     ):
+        """
+        Initialize a Subtensor instance.
+        See Substrate.__init__ for more details.
+        """
+
         super().__init__(*args, **kwargs)
 
         self.admin_utils = AdminUtils(self)
