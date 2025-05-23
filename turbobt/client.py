@@ -1,6 +1,6 @@
 import bittensor_wallet
 
-from .block import Block, Blocks
+from .block import BlockReference, Blocks
 from .subnet import (
     SubnetReference,
     Subnets,
@@ -32,14 +32,14 @@ class Bittensor:
         await self.subtensor.__aexit__(*args, **kwargs)
 
     @property
-    def head(self) -> Block:
-        return Block(
+    def head(self) -> BlockReference:
+        return BlockReference(
             -1,
             client=self,
         )
 
-    def block(self, block_number: int) -> Block:
-        return Block(
+    def block(self, block_number: int) -> BlockReference:
+        return BlockReference(
             block_number,
             client=self,
         )
