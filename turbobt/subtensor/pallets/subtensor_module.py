@@ -137,6 +137,10 @@ class SubtensorModule(Pallet):
         :type port: int
         :param wallet: The wallet associated with the Axon service.
         :type wallet: bittensor_wallet.Wallet
+        :param placeholder1: Placeholder for further extra params.
+        :type placeholder1: int
+        :param placeholder2: Placeholder for further extra params.
+        :type placeholder2: int
         :return: An asynchronous result of the extrinsic submission.
         :rtype: ExtrinsicResult
         """
@@ -183,6 +187,12 @@ class SubtensorModule(Pallet):
         :type wallet: bittensor_wallet.Wallet
         :param certificate: The certificate for securing the Axon endpoint.
         :type certificate: bytes
+        :param protocol: Axon protocol. TCP, UDP, other.
+        :type protocol: int
+        :param placeholder1: Placeholder for further extra params.
+        :type placeholder1: int
+        :param placeholder2: Placeholder for further extra params.
+        :type placeholder2: int
         :return: An asynchronous result of the extrinsic submission.
         :rtype: ExtrinsicResult
         """
