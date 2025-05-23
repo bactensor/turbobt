@@ -56,11 +56,6 @@ class Author(Pallet):
 
         if not era:
             era = {}
-        else:
-            era = {
-                "current": (await self.substrate.chain.getHeader())["number"],
-                "period": 5,
-            }
 
         era_obj = self.substrate._registry.create_scale_object("Era")
         era_obj.encode(era or "00")

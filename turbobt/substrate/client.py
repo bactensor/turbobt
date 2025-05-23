@@ -147,8 +147,6 @@ class Substrate:
         """
         Send a JSON-RPC Request.
 
-        :param self: Description
-        :type self: 
         :param method: The name of the method to be invoked.
         :type method: str
         :param params: Parameter values to be used during the invocation of the method.

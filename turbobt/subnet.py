@@ -139,7 +139,6 @@ class SubnetNeurons:
             )
         else:
             extrinsic = await self.subnet.client.subtensor.subtensor_module.serve_axon(
-                certificate=certificate,
                 ip=ip,
                 netuid=self.subnet.netuid,
                 port=port,
@@ -385,11 +384,7 @@ class Subnets:
         return await self.client.subtensor.get_total_subnets()
 
     async def get(self, netuid):
-        subnet = Subnet(netuid, self._subtensor)
-        subnet.hyperparameters = {
-            "some": "param",
-        }
-        return subnet
+        return Subnet(netuid, self._subtensor)
 
     # TODO create?
     async def register(self, wallet=None, **kwargs):
