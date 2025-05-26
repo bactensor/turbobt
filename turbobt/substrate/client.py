@@ -11,8 +11,8 @@ from ._models import (
 )
 from ._scalecodec import load_type_registry_v15_types
 from .exceptions import (
-    StakeAmountTooLow,
-    SubtensorException,
+    CustomTransactionError,
+    SubstrateException,
     UnknownBlock,
 )
 from .pallets import (
@@ -163,16 +163,14 @@ class Substrate:
         response = await self._transport.send(request)
 
         if response.error:
-            # https://docs.bittensor.com/subtensor-nodes/subtensor-error-messages
-            # https://github.com/opentensor/subtensor/blob/main/pallets/subtensor/src/lib.rs#L1700-L1714
+            # https://docs.bittensor.com/errors/custom
             if response.error["code"] == 1010:
-                if response.error["data"] == "Custom error: 1":
-                    raise StakeAmountTooLow()
+                raise CustomTransactionError(response.error)
 
             if response.error["code"] == 4003:
                 raise UnknownBlock(response.error["message"])
 
-            raise SubtensorException(response)  # XXX
+            raise SubstrateException(response.error["message"])
 
         result = response.result
 

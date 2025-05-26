@@ -6,7 +6,7 @@ import typing
 import scalecodec.types
 
 from ._models import Subscription
-from .exceptions import SubtensorException
+from .exceptions import SubstrateException
 
 if typing.TYPE_CHECKING:
     from .client import Substrate
@@ -91,6 +91,6 @@ class ExtrinsicResult:
                     ),
                 )
 
-                raise SubtensorException.from_error(module_error.value)
+                raise SubstrateException.from_error(module_error.value)
 
-            raise SubtensorException(dispatch_error)
+            raise SubstrateException(dispatch_error)

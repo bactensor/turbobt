@@ -1,5 +1,11 @@
 import scalecodec
 
+from turbobt.substrate.exceptions import CustomTransactionError
+from turbobt.subtensor.exceptions import (
+    SUBSTRATE_CUSTOM_ERRORS,
+    SubtensorException,
+)
+
 from ..substrate.client import Substrate
 from .cache import (
     CacheControl,
@@ -67,6 +73,20 @@ class Subtensor(Substrate):
         return output.decode(
             scalecodec.ScaleBytes(response),
         )
+
+    async def rpc(self, method: str, params: dict) -> int | bytearray | dict:
+        try:
+            return await super().rpc(method, params)
+        except CustomTransactionError as e:
+            error = e.args[0]
+
+            # https://docs.bittensor.com/errors/custom
+            try:
+                error_cls = SUBSTRATE_CUSTOM_ERRORS[error["data"]]
+            except KeyError:
+                error_cls = SubtensorException
+
+            raise error_cls(error["message"])
 
 
 class CacheSubtensor(Subtensor):
