@@ -32,7 +32,7 @@ class Chain(Pallet):
         Get header and body of a relay chain block.
 
         :param block_hash: The hash of the block where this transaction was in.
-        :type block_hash: 
+        :type block_hash:
         :return: An object containing information about the requested block.
         :rtype: SignedBlock
         """

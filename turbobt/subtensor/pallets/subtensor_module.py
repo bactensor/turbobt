@@ -67,7 +67,7 @@ class SubtensorModule(Pallet):
         :param hotkey: Hotkey to be registered to the network.
         :type hotkey: str
         :param wallet: The wallet associated with the neuron to be registered.
-        :type wallet: 
+        :type wallet:
         :return: An asynchronous result of the extrinsic submission.
         :rtype: ExtrinsicResult
         """

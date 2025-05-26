@@ -20,7 +20,6 @@ class Author(Pallet):
         era: dict | None = None,
         nonce: int | None = None,
     ) -> ExtrinsicResult:
-
         """
         Submit and subscribe to watch an extrinsic until unsubscribed.
 
@@ -111,7 +110,7 @@ class Author(Pallet):
         genesis_hash: str,
         runtime_version: RuntimeVersion,
         tip: int = 0,
-        tip_asset_id = None,
+        tip_asset_id=None,
     ):
         extrinsic_payload = self.substrate._registry.create_scale_object(
             "ExtrinsicPayloadValue",
@@ -196,4 +195,3 @@ class Author(Pallet):
         )
 
         return extrinsic
-

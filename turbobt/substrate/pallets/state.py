@@ -35,7 +35,7 @@ class State(Pallet):
         :param data: The input data to be passed to the built-in function as bytes.
         :type data: str
         :param block_hash: The hash of a specific block in the chain.
-        :type block_hash: 
+        :type block_hash:
         :return: The output of the call to the built-in function.
         :rtype: int | bytearray | dict
         """
@@ -60,7 +60,7 @@ class State(Pallet):
         Returns the runtime metadata.
 
         :param block_hash: The block hash to retrieve runtime metadata.
-        :type block_hash: 
+        :type block_hash:
         :return: Runtime Metadata.
         :rtype: ScaleType
         """
@@ -87,7 +87,7 @@ class State(Pallet):
         Get the runtime version.
 
         :param block_hash: The hash of a specific block in the chain. If not provided, the request will return the runtime version from the latest block.
-        :type block_hash: 
+        :type block_hash:
         :return: Runtime Version.
         :rtype: RuntimeVersion
         """
@@ -113,13 +113,13 @@ class State(Pallet):
         :param key: The storage name.
         :type key: str
         :param params: Parts of Storage Key for which you want to retrieve the storage data.
-        :type params: 
+        :type params:
         :param count: The number of results to include per page.
         :type count: int
         :param start_key: This parameter is used for pagination, indicating the starting key to fetch results from. If not provided, the request will start from the beginning.
-        :type start_key: 
+        :type start_key:
         :param block_hash: The hash of a specific block in the chain. Providing this parameter ensures that the keys are queried at the state corresponding to that block. If not provided, the request will use the latest block.
-        :type block_hash: 
+        :type block_hash:
         :return: An asynchronous result of the extrinsic submission.
         :rtype: list
         """
@@ -158,9 +158,9 @@ class State(Pallet):
         :param key: The storage name.
         :type key: str
         :param params: Parts of Storage Key for which you want to retrieve the storage data.
-        :type params: 
+        :type params:
         :param block_hash: The hash of a specific block in the chain.
-        :type block_hash: 
+        :type block_hash:
         :return: An asynchronous result of the extrinsic submission.
         :rtype: Any | None
         """
@@ -207,7 +207,7 @@ class State(Pallet):
         :param keys: An array representing the key or keys for which you want to retrieve storage entries.
         :type keys: list[str]
         :param block_hash: The hash of a specific block in the chain.
-        :type block_hash: 
+        :type block_hash:
         :return: An array representing the set of changes to the storage entries starting from the specified block hash. Each element of the array corresponds to a storage entry change.
         :rtype: list[StorageChangeSet]
         """
