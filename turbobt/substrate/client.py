@@ -82,13 +82,7 @@ class Substrate:
         if not isinstance(uri, str):
             raise TypeError(f'Invalid "uri" param: {uri!r}')
 
-        if uri.startswith("wss://"):
-            return WebSocketTransport(
-                uri,
-                ssl=verify,
-            )
-
-        if uri.startswith("ws://"):
+        if uri.startswith(("ws://", "wss://")):
             return WebSocketTransport(
                 uri,
                 ssl=verify,
