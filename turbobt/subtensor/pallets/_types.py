@@ -37,17 +37,7 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
         start_key: str = "",
         block_hash: str = None,
     ):
-        keys = await self.subtensor.state.getKeysPaged(
-            f"{self.module}.{self.storage}",
-            *args,
-            block_hash=block_hash,
-            count=count,
-            start_key=start_key,
-        )
-        results = await self.subtensor.state.queryStorageAt(
-            keys,
-            block_hash=block_hash,
-        )
+        await self.subtensor._init_runtime()
 
         pallet = self.subtensor._metadata.get_metadata_pallet(self.module)
         storage_function = pallet.get_storage_function(self.storage)
@@ -56,6 +46,24 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             pallet,
             storage_function,
             args,
+        )
+
+        keys = await self.subtensor.state.getKeysPaged(
+            f"{self.module}.{self.storage}",
+            *args,
+            block_hash=block_hash,
+            count=count,
+            start_key=start_key,
+        )
+        keys = [
+            key
+            for key in keys
+            if key.startswith(prefix)
+        ]
+
+        results = await self.subtensor.state.queryStorageAt(
+            keys,
+            block_hash=block_hash,
         )
 
         param_types = storage_function.get_params_type_string()
@@ -87,7 +95,6 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             )
             for result in results
             for key, value in result["changes"]
-            if key.startswith(prefix)   # TODO?
         )
         results = (
             (
@@ -99,7 +106,6 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
                 ),
             )
             for key, value in results
-            if key  # TODO but has a value???
         )
         results = (
             (
