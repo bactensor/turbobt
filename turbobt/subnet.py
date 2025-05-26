@@ -110,7 +110,11 @@ class SubnetNeurons:
     async def __aiter__(self):
         return iter(await self.all())
 
-    async def register(self, hotkey, wallet=None):
+    async def register(
+        self,
+        hotkey: bittensor_wallet.Keypair,
+        wallet: bittensor_wallet.Wallet | None = None,
+    ) -> None:
         # TODO netuid = 0
 
         extrinsic = await self.subnet.client.subtensor.subtensor_module.burned_register(

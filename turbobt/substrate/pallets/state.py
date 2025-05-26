@@ -25,7 +25,7 @@ class State(Pallet):
         self,
         method: str,
         data: str,
-        block_hash=None,
+        block_hash: str | None = None,
     ) -> int | bytearray | dict:
         """
         Perform a call to a builtin on the chain.
@@ -52,7 +52,10 @@ class State(Pallet):
             },
         )
 
-    async def getMetadata(self, block_hash=None):
+    async def getMetadata(
+        self,
+        block_hash: str | None = None,
+    ) -> scalecodec.ScaleType:
         """
         Returns the runtime metadata.
 
