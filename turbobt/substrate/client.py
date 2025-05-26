@@ -51,6 +51,7 @@ class Substrate:
 
         self._registry = None
         self._metadata = None
+        self._apis = None
 
         self.author = Author(self)
         self.chain = Chain(self)
@@ -116,11 +117,13 @@ class Substrate:
         self._registry = runtime_config
 
         metadata = await self.metadata.metadata_at_version(15)
+        metadata15 = metadata.value[1]["V15"]
 
         runtime_config.add_portable_registry(metadata)
 
-        metadata15 = metadata.value[1]["V15"]
-        metadata15["apis"] = {
+        self._registry = runtime_config
+        self._metadata = metadata
+        self._apis = {
             api["name"]: api | {
                 "methods": {
                     api_method["name"]: api_method
@@ -129,10 +132,6 @@ class Substrate:
             }
             for api in metadata15["apis"]
         }
-        # XXX
-        runtime_config.type_registry["apis"] = metadata15["apis"]
-        self._registry = runtime_config
-        self._metadata = metadata
 
     async def close(self) -> None:
         await self._transport.close()

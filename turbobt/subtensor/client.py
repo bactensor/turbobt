@@ -48,8 +48,7 @@ class Subtensor(Substrate):
     async def api_call(self, api, method, block_hash=None, **kwargs):
         await self._init_runtime()
 
-        # XXX
-        api = self._registry.type_registry["apis"][api]
+        api = self._apis[api]
         method = api["methods"][method]
         data = bytearray()
 
