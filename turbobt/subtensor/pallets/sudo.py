@@ -27,9 +27,11 @@ class Sudo(Pallet):
         :rtype: ExtrinsicResult
         """
 
+        await self.subtensor._init_runtime()
+
         call = self.subtensor._registry.create_scale_object(
             "Call",
-            metadata=self.subtensor.metadata,
+            metadata=self.subtensor._metadata,
         )
         call.encode(
             {
