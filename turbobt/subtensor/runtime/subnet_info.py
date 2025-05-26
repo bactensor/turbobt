@@ -53,21 +53,8 @@ class SubnetInfoRuntimeApi(RuntimeApi):
         if not result:
             return None
 
-        # XXX fix decoding
-        result = {
-            key: bytes.fromhex(value[2:]) if isinstance(value, str) else value
-            for key, value in result.items()
-        }
-        result = {
-            key: bytes(value).decode()
-            if key
-            in (
-                "subnet_name",
-                "token_symbol",
-            )
-            else value
-            for key, value in result.items()
-        }
+        for key in ("subnet_name", "token_symbol"):
+            result[key] = bytes(result[key]).decode()
 
         for key in ("owner_coldkey", "owner_hotkey"):
             result[key] = scalecodec.utils.ss58.ss58_encode(
