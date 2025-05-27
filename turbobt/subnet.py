@@ -366,6 +366,17 @@ class SubnetReference:
     async def list_validators(self, block_hash: str | None = None) -> list[Neuron]:
         return await self.neurons.validators(block_hash)
 
+    def neuron(
+        self,
+        uid: int | None = None,
+        hotkey: str | None = None,
+    ) -> NeuronReference:
+        return NeuronReference(
+            self,
+            uid=uid,
+            hotkey=hotkey,
+        )
+
 
 @dataclasses.dataclass(
     kw_only=True,
