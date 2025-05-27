@@ -31,6 +31,7 @@ class BlockReference:
 
     async def __aenter__(self):
         if self.hash:
+            block_number = self.number
             block_hash = self.hash
         else:
             if self.number is None or self.number == -1:
@@ -98,7 +99,7 @@ class Blocks:
     def __init__(self, client: Bittensor):
         self.client = client
 
-    def __getitem__(self, key: int | str):
+    def __getitem__(self, key: int | str) -> BlockReference:
         if isinstance(key, int):
             return BlockReference(
                 client=self.client,
@@ -113,10 +114,10 @@ class Blocks:
 
         raise TypeError
 
-    async def head(self):
-        block_hash = await self.client.subtensor.chain.getBlockHash()
+    async def head(self) -> BlockReference:
+        header = await self.client.subtensor.chain.getHeader()
 
         return BlockReference(
-            block_hash=block_hash,
+            block_number=header["number"],
             client=self.client,
         )
