@@ -31,13 +31,18 @@ class NeuronInfoRuntimeApi(RuntimeApi):
         :rtype: dict or None
         """
 
-        return await self.subtensor.api_call(
+        neuron = await self.subtensor.api_call(
             "NeuronInfoRuntimeApi",
             "get_neuron",
             netuid=netuid,
             uid=uid,
             block_hash=block_hash,
         )
+
+        if not neuron:
+            return None
+
+        return self._decode_neuron(neuron)
 
     async def get_neurons_lite(
         self,
@@ -65,13 +70,18 @@ class NeuronInfoRuntimeApi(RuntimeApi):
         if not result:
             return None
 
-        for neuron in result:
-            for key in ("coldkey", "hotkey"):
-                neuron[key] = scalecodec.utils.ss58.ss58_encode(neuron[key])
+        return [
+            self._decode_neuron(neuron)
+            for neuron in result
+        ]
 
-            neuron["stake"] = {
-                scalecodec.utils.ss58.ss58_encode(key): value
-                for key, value in neuron["stake"]
-            }
+    def _decode_neuron(self, neuron: dict) -> dict:
+        for key in ("coldkey", "hotkey"):
+            neuron[key] = scalecodec.utils.ss58.ss58_encode(neuron[key])
 
-        return result
+        neuron["stake"] = {
+            scalecodec.utils.ss58.ss58_encode(key): value
+            for key, value in neuron["stake"]
+        }
+
+        return neuron
