@@ -113,6 +113,8 @@ class SubnetNeurons:
     async def register(
         self,
         hotkey: bittensor_wallet.Keypair,
+        *,
+        timeout: float | None = None,
         wallet: bittensor_wallet.Wallet | None = None,
     ) -> None:
         # TODO netuid = 0
@@ -123,7 +125,7 @@ class SubnetNeurons:
             wallet=wallet or self.subnet.client.wallet,
         )
 
-        async with asyncio.timeout(60):
+        async with asyncio.timeout(timeout):
             await extrinsic.wait_for_finalization()
 
     async def serve(
