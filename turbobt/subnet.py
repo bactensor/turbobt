@@ -68,7 +68,7 @@ class SubnetCommitments:
                 for field in value["info"]["fields"]
                 for value in field.values()
             )
-            for hotkey, value in commitments
+            for (netuid, hotkey), value in commitments
         }
 
     async def set(
@@ -274,7 +274,7 @@ class SubnetWeights:
             validator_uid: {
                 uid: u16_proportion_to_float(weight) for uid, weight in zipped_weights
             }
-            for validator_uid, zipped_weights in weights
+            for (netuid, validator_uid), zipped_weights in weights
         }
 
     async def fetch_pending(
@@ -303,7 +303,7 @@ class SubnetWeights:
                 )
                 for hotkey, commit, round_number in commits
             }
-            for reveal_round, commits in weights
+            for (netuid, reveal_round), commits in weights
         }
 
     def _normalize(self, weights: dict[int, float]) -> dict[int, int]:

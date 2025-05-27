@@ -124,13 +124,30 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             for key, value in results
         )
 
+        # decode K1 as HotKey
+        if self.__orig_class__.__args__[0] is HotKey:
+            results = (
+                (
+                    (
+                        scalecodec.utils.ss58.ss58_encode(keys[0]),
+                        keys[1],
+                    ),
+                    value,
+                )
+                for keys, value in results
+            )
+
+        # decode K2 as HotKey
         if self.__orig_class__.__args__[1] is HotKey:
             results = (
                 (
-                    scalecodec.utils.ss58.ss58_encode(key),
+                    (
+                        keys[0],
+                        scalecodec.utils.ss58.ss58_encode(keys[1]),
+                    ),
                     value,
                 )
-                for key, value in results
+                for keys, value in results
             )
 
         return list(results)
