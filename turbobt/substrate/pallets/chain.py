@@ -58,6 +58,10 @@ class Chain(Pallet):
             ).decode()
             for extrinsic in result["block"]["extrinsics"]
         ]
+        result["block"]["header"]["number"] = int(
+            result["block"]["header"]["number"],
+            16,
+        )
 
         return result
 
@@ -94,6 +98,6 @@ class Chain(Pallet):
         if not block:
             return None
 
-        block["number"] = int(block["number"], 16)  # TODO order?
+        block["number"] = int(block["number"], 16)
 
         return block
