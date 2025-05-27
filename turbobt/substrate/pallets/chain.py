@@ -27,7 +27,7 @@ class SignedBlock(typing.TypedDict):
 
 
 class Chain(Pallet):
-    async def getBlock(self, block_hash: str | None = None) -> SignedBlock:
+    async def getBlock(self, block_hash: str | None = None) -> SignedBlock | None:
         """
         Get header and body of a relay chain block.
 
@@ -47,6 +47,10 @@ class Chain(Pallet):
                 "hash": block_hash,
             },
         )
+
+        if not result:
+            return None
+
         result["block"]["extrinsics"] = [
             extrinsic_cls(
                 data=scalecodec.ScaleBytes(extrinsic),
@@ -75,7 +79,7 @@ class Chain(Pallet):
 
         return f"0x{block_hash.hex()}"
 
-    async def getHeader(self, block_hash=None) -> Header:
+    async def getHeader(self, block_hash=None) -> Header | None:
         """
         Retrieves the header for a specific block.
         """
@@ -86,6 +90,10 @@ class Chain(Pallet):
                 "hash": block_hash,
             },
         )
+
+        if not block:
+            return None
+
         block["number"] = int(block["number"], 16)  # TODO order?
 
         return block
