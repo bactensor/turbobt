@@ -358,11 +358,11 @@ class SubnetReference:
             block_hash=block_hash or get_ctx_block_hash(),
         )
 
-    async def list_neurons(self) -> list[Neuron]:
-        return await self.neurons.all()
+    async def list_neurons(self, block_hash: str | None = None) -> list[Neuron]:
+        return await self.neurons.all(block_hash)
 
-    async def list_validators(self) -> list[Neuron]:
-        return await self.neurons.validators()
+    async def list_validators(self, block_hash: str | None = None) -> list[Neuron]:
+        return await self.neurons.validators(block_hash)
 
 
 @dataclasses.dataclass(
