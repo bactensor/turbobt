@@ -17,6 +17,9 @@ __all__ = [
 
 
 class BaseStorage:
+    def __len__(self) -> int:
+        raise NotImplementedError
+
     async def get(self, key: str) -> Response | None:
         raise NotImplementedError
 
@@ -32,6 +35,9 @@ class InMemoryStorage(BaseStorage):
         self.max_size = max_size
         self._cache = collections.OrderedDict[str, Response]()
 
+    def __len__(self):
+        return len(self._cache)
+
     async def get(self, key: str) -> Response | None:
         try:
             self._cache.move_to_end(key, last=False)
@@ -41,7 +47,7 @@ class InMemoryStorage(BaseStorage):
         return self._cache[key]
 
     async def set(self, key: str, response: Response) -> None:
-        if len(self._cache) > self.max_size:
+        if len(self._cache) >= self.max_size:
             self._cache.popitem()
 
         self._cache[key] = response

@@ -36,7 +36,7 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
         count: int = 100,
         start_key: str = "",
         block_hash: str = None,
-    ):
+    ) -> list[tuple[tuple[K1, K2], V]]:
         await self.subtensor._init_runtime()
 
         pallet = self.subtensor._metadata.get_metadata_pallet(self.module)
@@ -70,22 +70,27 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
         param_hashers = storage_function.get_param_hashers()
 
         key_type_string = []
-        for n in range(len(args), len(param_types)):
-            try:
-                hasher = HASHERS[param_hashers[n]]
-            except KeyError:
-                raise NotImplementedError(param_hashers[n])
 
-            key_type_string.append(
-                f"[u8; {hasher.hash_length}]"
-            )
-            key_type_string.append(param_types[n])
+        for param_hasher, param_type in zip(param_hashers, param_types):
+            try:
+                hasher = HASHERS[param_hasher]
+            except KeyError:
+                raise NotImplementedError(param_hasher)
+
+            key_type_string.append(f"[u8; {hasher.hash_length}]")
+            key_type_string.append(param_type)
 
         key_type = self.subtensor._registry.create_scale_object(
             f"({', '.join(key_type_string)})",
         )
         value_type = self.subtensor._registry.create_scale_object(
             storage_function.get_value_type_string(),
+        )
+
+        prefix = self.subtensor.state._storage_key(
+            pallet,
+            storage_function,
+            [],
         )
 
         results = (
@@ -109,7 +114,11 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
         )
         results = (
             (
-                key[-1],    # TODO depends on number of args
+                # remove key hashes
+                (
+                    key[1],
+                    key[3],
+                ),
                 value,
             )
             for key, value in results
