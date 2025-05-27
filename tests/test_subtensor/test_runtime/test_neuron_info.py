@@ -13,8 +13,8 @@ async def test_get_neuron(subtensor, mocked_transport):
     )
 
     assert neuron == {
-        "hotkey": "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "coldkey": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
+        "coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
         "uid": 0,
         "netuid": 1,
         "active": True,
@@ -35,12 +35,9 @@ async def test_get_neuron(subtensor, mocked_transport):
             "port": 0,
             "ip_type": 0,
         },
-        "stake": [
-            (
-                "0x0000000000000000000000000000000000000000000000000000000000000000",
-                1000000000,
-            ),
-        ],
+        "stake": {
+            "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": 1000000000,
+        },
         "rank": 0,
         "emission": 0,
         "incentive": 0,
