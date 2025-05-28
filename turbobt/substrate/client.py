@@ -39,7 +39,7 @@ class Substrate:
         self,
         uri: str = "wss://entrypoint-finney.opentensor.ai",
         *,
-        verify: ssl.SSLContext | bool = True,
+        verify: ssl.SSLContext | bool | None = None,
         transport: BaseTransport | None = None,
         timeout: float = 15.0,
     ):
@@ -74,7 +74,7 @@ class Substrate:
     def _init_transport(
         self,
         uri: str,
-        verify: ssl.SSLContext | bool = True,
+        verify: ssl.SSLContext | bool | None,
         transport: BaseTransport | None = None,
     ) -> BaseTransport:
         if transport is not None:
@@ -83,10 +83,15 @@ class Substrate:
         if not isinstance(uri, str):
             raise TypeError(f'Invalid "uri" param: {uri!r}')
 
+        kwargs = {}
+
+        if verify is not None:
+            kwargs["ssl"] = verify
+
         if uri.startswith(("ws://", "wss://")):
             return WebSocketTransport(
                 uri,
-                ssl=verify,
+                **kwargs,
             )
 
         if uri.startswith(("http://", "https://")):
@@ -94,7 +99,7 @@ class Substrate:
 
             return HTTPTransport(
                 uri,
-                ssl=verify,
+                **kwargs,
             )
 
         raise ValueError(f'Invalid "uri" param: {uri}')
