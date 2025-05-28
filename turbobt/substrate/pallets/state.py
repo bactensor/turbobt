@@ -35,14 +35,10 @@ class State(Pallet):
         :param data: The input data to be passed to the built-in function as bytes.
         :type data: str
         :param block_hash: The hash of a specific block in the chain.
-        :type block_hash:
+        :type block_hash: str
         :return: The output of the call to the built-in function.
         :rtype: int | bytearray | dict
         """
-
-        if block_hash:
-            block_hash = f"0x{block_hash.hex()}"
-
         return await self.substrate.rpc(
             method="state_call",
             params={
