@@ -22,7 +22,7 @@ class Metadata(SubstrateRuntime):
 
         response = await self.substrate.state.call(
             "Metadata_metadata_at_version",
-            f"0x{version.to_bytes(4, byteorder="little").hex()}",
+            f"0x{version.to_bytes(4, byteorder='little').hex()}",
             block_hash,
         )
 

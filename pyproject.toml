@@ -6,13 +6,13 @@ build-backend = "hatchling.build"
 name = "turbobt"
 description = "A next generation Bittensor SDK, for Python 3."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Framework :: AsyncIO",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
