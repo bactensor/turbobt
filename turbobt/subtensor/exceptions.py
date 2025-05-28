@@ -4,7 +4,7 @@ from turbobt.substrate.exceptions import (
 )
 
 
-class SubtensorException(SubstrateException):
+class SubtensorException(SubstrateException, metaclass=ChainErrorMeta):
     """
     Base error for any Subtensor related errors.
     """
@@ -100,44 +100,38 @@ class BadRequest(SubtensorException):
     """
 
 
-class SubtensorChainException(SubtensorException, metaclass=ChainErrorMeta):
-    """
-    Base error for any Subtensor chain related errors.
-    """
-
-
-class NetworkTxRateLimitExceeded(SubtensorChainException):
+class NetworkTxRateLimitExceeded(SubtensorException):
     """
     A transactor exceeded the rate limit for add network transaction.
     """
 
 
-class NotEnoughBalanceToStake(SubtensorChainException):
+class NotEnoughBalanceToStake(SubtensorException):
     """
     The caller is requesting adding more stake than there exists in the coldkey account.
     See: "[add_stake()]"
     """
 
 
-class CommitRevealDisabled(SubtensorChainException):
+class CommitRevealDisabled(SubtensorException):
     """
     Attempting to commit/reveal weights when disabled.
     """
 
 
-class CommittingWeightsTooFast(SubtensorChainException):
+class CommittingWeightsTooFast(SubtensorException):
     """
     A transactor exceeded the rate limit for setting weights.
     """
 
 
-class CommitmentSetRateLimitExceeded(SubtensorChainException):
+class CommitmentSetRateLimitExceeded(SubtensorException):
     """
     Account is trying to commit data too fast, rate limit exceeded.
     """
 
 
-class HotKeyAlreadyRegisteredInSubNet(SubtensorChainException):
+class HotKeyAlreadyRegisteredInSubNet(SubtensorException):
     """
     The caller is requesting registering a neuron which already exists in the active set.
     """
