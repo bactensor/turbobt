@@ -79,7 +79,7 @@ class SubtensorModule(Pallet):
                 "netuid": netuid,
                 "hotkey": hotkey,
             },
-            wallet=wallet,
+            key=wallet.coldkey,
         )
 
     async def commit_crv3_weights(
@@ -97,7 +97,7 @@ class SubtensorModule(Pallet):
                 "commit": f"0x{commit.hex()}",
                 "reveal_round": reveal_round,
             },
-            wallet=wallet,
+            key=wallet.coldkey,
         )
 
     async def register_network(
@@ -113,7 +113,7 @@ class SubtensorModule(Pallet):
                 "hotkey": hotkey,
                 "mechid": mechid,
             },
-            wallet=wallet,
+            key=wallet.coldkey,
         )
 
     async def serve_axon(
@@ -163,7 +163,7 @@ class SubtensorModule(Pallet):
                 "protocol": protocol,
                 "version": version,
             },
-            wallet=wallet,
+            key=wallet.hotkey,
         )
 
     async def serve_axon_tls(
@@ -219,5 +219,5 @@ class SubtensorModule(Pallet):
                 "protocol": protocol,
                 "version": version,
             },
-            wallet=wallet,
+            key=wallet.hotkey,
         )

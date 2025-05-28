@@ -62,5 +62,5 @@ class Commitments(Pallet):
                 "netuid": netuid,
                 "info": info,
             },
-            wallet=wallet,
+            key=wallet.coldkey,
         )

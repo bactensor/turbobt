@@ -28,5 +28,5 @@ async def test_sudo(subtensor, alice_wallet):
                 },
             },
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )

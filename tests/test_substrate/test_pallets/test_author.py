@@ -20,7 +20,7 @@ async def test_submit_and_watch_extrinsic(substrate, mocked_transport, alice_wal
             "hotkey": alice_wallet.hotkey.ss58_address,
             "mechid": 1,
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )
 
     assert extrinsic.subscription.id == "S6KpbWmhS2jSAsc8"

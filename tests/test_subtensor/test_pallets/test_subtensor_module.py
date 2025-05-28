@@ -16,7 +16,7 @@ async def test_burned_register(subtensor, alice_wallet):
             "netuid": 1,
             "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )
 
 
@@ -37,7 +37,7 @@ async def test_commit_crv3_weights(subtensor, alice_wallet):
             "commit": "0x54455354",
             "reveal_round": 204,
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )
 
 
@@ -56,7 +56,7 @@ async def test_register_network(subtensor, alice_wallet):
             "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
             "mechid": 1,
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )
 
 
@@ -84,7 +84,7 @@ async def test_serve_axon(subtensor, alice_wallet):
             "protocol": 4,
             "version": 100,
         },
-        wallet=alice_wallet,
+        key=alice_wallet.hotkey,
     )
 
 
@@ -114,5 +114,5 @@ async def test_serve_axon_tls(subtensor, alice_wallet):
             "protocol": 4,
             "version": 100,
         },
-        wallet=alice_wallet,
+        key=alice_wallet.hotkey,
     )

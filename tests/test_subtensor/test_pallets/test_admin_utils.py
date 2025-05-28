@@ -18,7 +18,7 @@ async def test_sudo_set_commit_reveal_weights_enabled(subtensor, alice_wallet):
             "netuid": 1,
             "enabled": True,
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )
 
 
@@ -45,7 +45,7 @@ async def test_sudo_set_tempo(subtensor, alice_wallet):
                 },
             },
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )
 
 
@@ -72,5 +72,5 @@ async def test_sudo_set_weights_set_rate_limit(subtensor, alice_wallet):
                 },
             },
         },
-        wallet=alice_wallet,
+        key=alice_wallet.coldkey,
     )

@@ -16,7 +16,7 @@ class Author(Pallet):
         call_module: str,
         call_function: str,
         call_args: dict[str, typing.Any],
-        wallet: bittensor_wallet.Wallet,
+        key: bittensor_wallet.Keypair,
         era: dict | None = None,
         nonce: int | None = None,
     ) -> ExtrinsicResult:
@@ -61,14 +61,14 @@ class Author(Pallet):
 
         runtime_version, nonce, genesis_hash, block_hash = await asyncio.gather(
             self.substrate.state.getRuntimeVersion(),
-            self.substrate.system.accountNextIndex(wallet.coldkey.ss58_address),
+            self.substrate.system.accountNextIndex(key.ss58_address),
             self.substrate.chain.getBlockHash(0),
             self.substrate.chain.getBlockHash(era_obj.birth(era.get("current"))),
         )
 
         extrinsic = self._sign(
             call,
-            wallet.coldkey,
+            key,
             nonce=nonce,
             era=era_obj.value,
             block_hash=block_hash,

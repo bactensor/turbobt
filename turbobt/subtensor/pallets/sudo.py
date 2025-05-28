@@ -47,5 +47,5 @@ class Sudo(Pallet):
             call_args={
                 "call": call,
             },
-            wallet=wallet,
+            key=wallet.coldkey,
         )

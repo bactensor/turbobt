@@ -8,6 +8,18 @@ import pytest_asyncio
 from tests.mock.transport import MockedTransport
 
 
+@pytest_asyncio.fixture(autouse=True, scope="session")
+def monkeypatch_keypair(alice_wallet):
+    assert alice_wallet.hotkey != alice_wallet.hotkey, "Keypair.__eq__ fixed!"
+
+    with unittest.mock.patch.object(
+        bittensor_wallet.Keypair,
+        "__eq__",
+        lambda self, other: str(self) == str(other)
+    ):
+        yield
+
+
 @pytest_asyncio.fixture(scope="session")
 def alice_wallet():
     keypair = bittensor_wallet.Keypair.create_from_uri("//Alice")

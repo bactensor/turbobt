@@ -31,7 +31,7 @@ class AdminUtils(Pallet):
                 "netuid": netuid,
                 "enabled": enabled,
             },
-            wallet=wallet,
+            key=wallet.coldkey,
         )
 
     async def sudo_set_tempo(
