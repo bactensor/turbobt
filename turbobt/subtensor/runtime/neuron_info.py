@@ -16,7 +16,7 @@ class NeuronInfoRuntimeApi(RuntimeApi):
         self,
         netuid: int,
         uid: int,
-        block_hash=None,
+        block_hash: str | None = None,
     ) -> dict | None:
         """
         Fetches information about a specific neuron in a subnet.

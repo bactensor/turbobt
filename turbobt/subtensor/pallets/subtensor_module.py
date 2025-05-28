@@ -32,7 +32,7 @@ class SubtensorModule(Pallet):
     def __init__(self, subtensor: Subtensor):
         super().__init__(subtensor)
 
-        self.CRV3WeightCommits = StorageDoubleMap[NetUid, None, None](
+        self.CRV3WeightCommits = StorageDoubleMap[NetUid, int, None](
             subtensor,
             "SubtensorModule",
             "CRV3WeightCommits",
