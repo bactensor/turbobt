@@ -319,9 +319,10 @@ class SubnetWeights:
 class SubnetReference:
     netuid: int
 
-    client: Bittensor = dataclasses.field(compare=False, repr=False)
+    client: dataclasses.InitVar[Bittensor]
 
-    def __post_init__(self):
+    def __post_init__(self, client: Bittensor):
+        self.client = client
         self.commitments = SubnetCommitments(self, self.client)
         self.neurons = SubnetNeurons(self)
         self.weights = SubnetWeights(self)
@@ -407,7 +408,9 @@ class Subnet(SubnetReference):
     owner_coldkey: str = dataclasses.field(compare=False, repr=False)
     identity: dict[str, str] = dataclasses.field(compare=False, repr=False)  # empty?
 
-    def __post_init__(self):
+    def __post_init__(self, *args, **kwargs):
+        super().__post_init__(*args, **kwargs)
+
         self.neurons = SubnetNeurons(self)
 
 
