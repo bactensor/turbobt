@@ -354,6 +354,22 @@ class SubnetReference:
             block_hash=block_hash or get_ctx_block_hash(),
         )
 
+    async def get_neuron(
+        self,
+        key: str | int,
+        block_hash: str | None = None,
+    ) -> Neuron | None:
+        if isinstance(key, str):
+            uid = None
+            hotkey = key
+        elif isinstance(key, int):
+            uid = key
+            hotkey = None
+        else:
+            raise TypeError
+
+        return await self.neuron(uid, hotkey).get(block_hash)
+
     async def get_state(self, block_hash: str | None = None):
         return await self.client.subtensor.subnet_info.get_subnet_state(
             self.netuid,

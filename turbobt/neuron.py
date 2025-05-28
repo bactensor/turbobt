@@ -5,6 +5,8 @@ import enum
 import ipaddress
 import typing
 
+from turbobt.block import get_ctx_block_hash
+
 from .substrate._scalecodec import u16_proportion_to_float
 
 if typing.TYPE_CHECKING:
@@ -125,13 +127,17 @@ class NeuronReference:
     uid: int | None = None
     hotkey: str | None = None
 
-    async def get(self) -> Neuron | None:
+    async def get(self, block_hash: str | None = None) -> Neuron | None:
         if self.uid is not None:
             uid = self.uid
         elif self.hotkey is not None:
+            if not block_hash:
+                block_hash = get_ctx_block_hash()
+
             uid = await self.subnet.client.subtensor.subtensor_module.Uids.get(
                 self.subnet.netuid,
                 self.hotkey,
+                block_hash=block_hash,
             )
         else:
             raise ValueError
@@ -139,6 +145,7 @@ class NeuronReference:
         neuron_info = await self.subnet.client.subtensor.neuron_info.get_neuron(
             self.subnet.netuid,
             uid,
+            block_hash=block_hash,
         )
 
         if not neuron_info:
