@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "turbobt"
+description = "A next generation Bittensor SDK, for Python 3."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Framework :: AsyncIO",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "bittensor-commit-reveal~=0.3.1",
+    "bittensor-wallet~=3.0.4",
+    "httpx~=0.26.0",
+    "scalecodec~=1.2.11",
+    "websockets~=14.1",
+    "xxhash~=3.5.0",
+]
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+dynamic = [
+    "version",
+]
+
+[project.urls]
+Homepage = "https://github.com/bactensor/turbobt"
+Issues = "https://github.com/bactensor/turbobt/issues"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/README.md",
+    "/tests",
+    "/turbobt",
+]
+
+[tool.hatch.version]
+path = "turbobt/__version__.py"
