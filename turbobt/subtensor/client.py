@@ -45,7 +45,13 @@ class Subtensor(Substrate):
         self.neuron_info = NeuronInfoRuntimeApi(self)
         self.subnet_info = SubnetInfoRuntimeApi(self)
 
-    async def api_call(self, api, method, block_hash=None, **kwargs):
+    async def api_call(
+        self,
+        api: str,
+        method: str,
+        block_hash: str | None,
+        **kwargs,
+    ):
         await self._init_runtime()
 
         api = self._apis[api]
