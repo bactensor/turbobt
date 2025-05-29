@@ -29,6 +29,7 @@ class WebSocketTransport(BaseTransport):
         ),
         **kwargs,
     ):
+        self.__lock = asyncio.Lock()
         self.__connections = self._connections_generator(
             websockets.asyncio.client.connect(
                 uri,
@@ -57,7 +58,8 @@ class WebSocketTransport(BaseTransport):
 
     @contextlib.asynccontextmanager
     async def connected(self):
-        connection = await self.__connections.__anext__()
+        async with self.__lock:
+            connection = await self.__connections.__anext__()
 
         try:
             yield connection
