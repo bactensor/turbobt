@@ -97,7 +97,7 @@ class SubtensorModule(Pallet):
                 "commit": f"0x{commit.hex()}",
                 "reveal_round": reveal_round,
             },
-            key=wallet.coldkey,
+            key=wallet.hotkey,
         )
 
     async def register_network(
