@@ -242,7 +242,7 @@ class SubnetWeights:
             self.subnet.netuid,
             commit,
             reveal_round,
-            wallet,
+            wallet=wallet or self.subnet.client.wallet,
         )
 
         await extrinsic.wait_for_finalization()
