@@ -8,6 +8,10 @@ import bittensor_commit_reveal
 import bittensor_wallet
 import scalecodec.utils.ss58
 
+from turbobt.subtensor.runtime.subnet_info import (
+    SubnetHyperparams,
+    SubnetState,
+)
 from turbobt.subtensor.types import HotKey, Uid
 
 from .block import get_ctx_block_hash
@@ -349,7 +353,7 @@ class SubnetReference:
 
         return subnet
 
-    async def get_hyperparameters(self, block_hash: str | None = None) -> dict:
+    async def get_hyperparameters(self, block_hash: str | None = None) -> SubnetHyperparams | None:
         return await self.client.subtensor.subnet_info.get_subnet_hyperparams(
             self.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
@@ -371,7 +375,7 @@ class SubnetReference:
 
         return await self.neuron(uid, hotkey).get(block_hash)
 
-    async def get_state(self, block_hash: str | None = None):
+    async def get_state(self, block_hash: str | None = None) -> SubnetState | None:
         return await self.client.subtensor.subnet_info.get_subnet_state(
             self.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
