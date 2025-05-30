@@ -15,7 +15,7 @@ class DynamicInfo(typing.TypedDict):
     # ...
 
 
-class SubnetHyperparam(typing.TypedDict):
+class SubnetHyperparams(typing.TypedDict):
     max_weights_limit: float
     # ...
 
@@ -67,7 +67,7 @@ class SubnetInfoRuntimeApi(RuntimeApi):
         self,
         netuid: int,
         block_hash=None,
-    ) -> SubnetHyperparam | None:
+    ) -> SubnetHyperparams | None:
         """
         Fetches hyperparameters of a subnet.
 
