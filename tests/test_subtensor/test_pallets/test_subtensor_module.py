@@ -116,3 +116,43 @@ async def test_serve_axon_tls(subtensor, alice_wallet):
         },
         key=alice_wallet.hotkey,
     )
+
+
+@pytest.mark.asyncio
+async def test_evm_addresses_fetch(subtensor, mocked_transport):
+    mocked_transport.responses["state_getKeysPaged"] = {
+        "result": [
+            "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00a71a89063ba6541ca300",
+            "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00ce2b3c8f6925c6c8c500",
+            "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00d149990e23eec1414200",
+        ],
+    }
+    mocked_transport.responses["state_queryStorageAt"] = {
+        "result": [
+            {
+                "block": "0x388b5c4daa4e254119cb1a62b061af72b4d562977a5ac7d698e79698da4ffaa2",
+                "changes": [
+                    [
+                        "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00a71a89063ba6541ca300",
+                        "0x77407f1709d339f5583feac922c0592e248f785f507e560000000000",
+                    ],
+                    [
+                        "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00ce2b3c8f6925c6c8c500",
+                        "0xa873b6e2ed71bae54f232fb622b713239f0ec54cc87e530000000000",
+                    ],
+                    [
+                        "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00d149990e23eec1414200",
+                        "0xba6a023c87dd55a0b862925278e77056677e92b7f37e530000000000",
+                    ],
+                ],
+            },
+        ],
+    }
+
+    evm_addresses = await subtensor.subtensor_module.AssociatedEvmAddress.query(12)
+
+    assert evm_addresses == [
+        ((12, 163), ("0x77407f1709d339f5583feac922c0592e248f785f", 5668432)),
+        ((12, 197), ("0xa873b6e2ed71bae54f232fb622b713239f0ec54c", 5471944)),
+        ((12, 66), ("0xba6a023c87dd55a0b862925278e77056677e92b7", 5471987)),
+    ]

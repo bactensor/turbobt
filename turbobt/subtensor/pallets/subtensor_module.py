@@ -18,6 +18,11 @@ if typing.TYPE_CHECKING:
     from .. import Subtensor
 
 
+class AssociatedEvmAddress(typing.NamedTuple):
+    h160_address: str
+    last_block: int  # last block where ownership was proven
+
+
 class NeuronCertificate(typing.TypedDict):
     algorithm: int
     public_key: str
@@ -32,6 +37,11 @@ class SubtensorModule(Pallet):
     def __init__(self, subtensor: Subtensor):
         super().__init__(subtensor)
 
+        self.AssociatedEvmAddress = StorageDoubleMap[NetUid, Uid, AssociatedEvmAddress](
+            subtensor,
+            "SubtensorModule",
+            "AssociatedEvmAddress",
+        )
         self.CRV3WeightCommits = StorageDoubleMap[NetUid, int, None](
             subtensor,
             "SubtensorModule",
