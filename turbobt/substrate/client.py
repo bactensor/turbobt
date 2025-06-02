@@ -1,3 +1,4 @@
+import asyncio
 import ssl
 import types
 import typing
@@ -59,6 +60,8 @@ class Substrate:
         self.state = State(self)
         self.system = System(self)
 
+        self.__lock = asyncio.Lock()
+
     async def __aenter__(self: T) -> T:
         await self._transport.__aenter__()
         return self
@@ -105,38 +108,39 @@ class Substrate:
         raise ValueError(f'Invalid "uri" param: {uri}')
 
     async def _init_runtime(self) -> scalecodec.base.RuntimeConfigurationObject:
-        if self._registry:
-            return
+        async with self.__lock:
+            if self._registry:
+                return
 
-        runtime_config = scalecodec.base.RuntimeConfigurationObject()
-        runtime_config.update_type_registry(
-            scalecodec.type_registry.load_type_registry_preset(name="core"),
-        )
+            runtime_config = scalecodec.base.RuntimeConfigurationObject()
+            runtime_config.update_type_registry(
+                scalecodec.type_registry.load_type_registry_preset(name="core"),
+            )
 
-        # patching-in MetadataV15 support
-        runtime_config.update_type_registry_types(load_type_registry_v15_types())
-        runtime_config.type_registry["types"]["metadataall"].type_mapping.append(
-            ["V15", "MetadataV15"],
-        )
+            # patching-in MetadataV15 support
+            runtime_config.update_type_registry_types(load_type_registry_v15_types())
+            runtime_config.type_registry["types"]["metadataall"].type_mapping.append(
+                ["V15", "MetadataV15"],
+            )
 
-        self._registry = runtime_config
+            self._registry = runtime_config
 
-        metadata = await self.metadata.metadata_at_version(15)
-        metadata15 = metadata.value[1]["V15"]
+            metadata = await self.metadata.metadata_at_version(15)
+            metadata15 = metadata.value[1]["V15"]
 
-        runtime_config.add_portable_registry(metadata)
+            runtime_config.add_portable_registry(metadata)
 
-        self._registry = runtime_config
-        self._metadata = metadata
-        self._apis = {
-            api["name"]: api | {
-                "methods": {
-                    api_method["name"]: api_method
-                    for api_method in api["methods"]
+            self._registry = runtime_config
+            self._metadata = metadata
+            self._apis = {
+                api["name"]: api | {
+                    "methods": {
+                        api_method["name"]: api_method
+                        for api_method in api["methods"]
+                    }
                 }
+                for api in metadata15["apis"]
             }
-            for api in metadata15["apis"]
-        }
 
     async def close(self) -> None:
         await self._transport.close()
