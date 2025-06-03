@@ -223,7 +223,11 @@ class SubnetWeights:
         self.client = subnet.client
 
     async def commit(
-        self, weights: dict[int, float], wallet=None, block_time=12
+        self,
+        weights: dict[int, float],
+        version_key: int = BITTENSOR_VERSION_INT,
+        wallet: bittensor_wallet.Wallet | None = None,
+        block_time: int = 12,
     ) -> int:
         weights = self._normalize(weights)
         uids, weights = zip(*weights.items())
@@ -234,7 +238,7 @@ class SubnetWeights:
             commit, reveal_round = bittensor_commit_reveal.get_encrypted_commit(
                 uids,
                 weights,
-                version_key=BITTENSOR_VERSION_INT,  # TODO? get/set_weights_version_key
+                version_key=version_key,
                 tempo=hyperparameters["tempo"],
                 current_block=block.number,
                 netuid=self.subnet.netuid,
