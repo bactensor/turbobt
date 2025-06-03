@@ -38,7 +38,7 @@ class Substrate:
 
     def __init__(
         self,
-        uri: str = "wss://entrypoint-finney.opentensor.ai",
+        uri: str = "finney",
         *,
         verify: ssl.SSLContext | bool | None = None,
         transport: BaseTransport | None = None,
@@ -90,6 +90,11 @@ class Substrate:
 
         if verify is not None:
             kwargs["ssl"] = verify
+
+        if uri == "finney":
+            uri = "wss://entrypoint-finney.opentensor.ai"
+        elif uri == "local":
+            uri = "ws://127.0.0.1:9944"
 
         if uri.startswith(("ws://", "wss://")):
             return WebSocketTransport(
