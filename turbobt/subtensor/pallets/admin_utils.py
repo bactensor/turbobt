@@ -53,7 +53,7 @@ class AdminUtils(Pallet):
         :rtype: ExtrinsicResult
         """
 
-        return await self.subtensor.sudo.sudo(
+        return await self.subtensor.Sudo.sudo(
             "AdminUtils",
             "sudo_set_tempo",
             {
@@ -82,7 +82,7 @@ class AdminUtils(Pallet):
         :rtype: ExtrinsicResult
         """
 
-        return await self.subtensor.sudo.sudo(
+        return await self.subtensor.Sudo.sudo(
             "AdminUtils",
             "sudo_set_weights_set_rate_limit",
             {

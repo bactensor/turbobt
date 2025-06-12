@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_sudo(subtensor, alice_wallet):
-    extrinsic = await subtensor.sudo.sudo(
+    extrinsic = await subtensor.Sudo.sudo(
         "AdminUtils",
         "sudo_set_tempo",
         {

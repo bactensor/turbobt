@@ -9,7 +9,7 @@ async def test_get_commitment(subtensor, alice_wallet, mocked_transport):
 
     netuid = 1
 
-    commitment = await subtensor.commitments.CommitmentOf.get(
+    commitment = await subtensor.Commitments.CommitmentOf.get(
         netuid,
         alice_wallet.hotkey.ss58_address,
     )
@@ -58,7 +58,7 @@ async def test_get_commitments(subtensor, alice_wallet, mocked_transport):
 
     netuid = 2
 
-    commitments = await subtensor.commitments.CommitmentOf.query(
+    commitments = await subtensor.Commitments.CommitmentOf.query(
         netuid,
     )
 
@@ -85,7 +85,7 @@ async def test_get_commitments(subtensor, alice_wallet, mocked_transport):
 
 @pytest.mark.asyncio
 async def test_set_commitment(subtensor, alice_wallet):
-    extrinsic = await subtensor.commitments.set_commitment(
+    extrinsic = await subtensor.Commitments.set_commitment(
         netuid=1,
         info={
             "fields": [

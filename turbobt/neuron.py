@@ -134,7 +134,7 @@ class NeuronReference:
             if not block_hash:
                 block_hash = get_ctx_block_hash()
 
-            uid = await self.subnet.client.subtensor.subtensor_module.Uids.get(
+            uid = await self.subnet.client.subtensor.SubtensorModule.Uids.get(
                 self.subnet.netuid,
                 self.hotkey,
                 block_hash=block_hash,
@@ -142,7 +142,7 @@ class NeuronReference:
         else:
             raise ValueError
 
-        neuron_info = await self.subnet.client.subtensor.neuron_info.get_neuron(
+        neuron_info = await self.subnet.client.subtensor.NeuronInfoRuntimeApi.get_neuron(
             self.subnet.netuid,
             uid,
             block_hash=block_hash,
@@ -159,7 +159,7 @@ class NeuronReference:
         return neuron
 
     async def get_certificate(self, block_hash: str | None = None) -> NeuronCertificate | None:
-        return await self.subnet.client.subtensor.subtensor_module.NeuronCertificates.get(
+        return await self.subnet.client.subtensor.SubtensorModule.NeuronCertificates.get(
             self.subnet.netuid,
             self.hotkey,
             block_hash=block_hash,

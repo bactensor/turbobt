@@ -9,7 +9,7 @@ async def test_get_dynamic_info(subtensor, mocked_transport):
         "result": "0x010400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000108501c1019501e101083903c5029101bd0f10000700e40b540202286bee0700e40b5402000000000000000000000000000000000000000000000000",
     }
 
-    dynamic_info = await subtensor.subnet_info.get_dynamic_info(
+    dynamic_info = await subtensor.SubnetInfoRuntimeApi.get_dynamic_info(
         netuid=1,
     )
 
@@ -48,7 +48,7 @@ async def test_get_dynamic_info_not_found(subtensor, mocked_transport):
         "result": "0x00",
     }
 
-    dynamic_info = await subtensor.subnet_info.get_dynamic_info(
+    dynamic_info = await subtensor.SubnetInfoRuntimeApi.get_dynamic_info(
         netuid=404,
     )
 
@@ -63,7 +63,7 @@ async def test_get_subnet_hyperparams(subtensor, mocked_transport):
         "result": "0x0128feff0100014000feff03009101025a620213ffffffffffffff3f0091019101214e010882841e000700e876481782ee360004c8010100025a620204009a990300cecc020000",
     }
 
-    subnet_hyperparams = await subtensor.subnet_info.get_subnet_hyperparams(
+    subnet_hyperparams = await subtensor.SubnetInfoRuntimeApi.get_subnet_hyperparams(
         netuid=1,
     )
 
@@ -106,7 +106,7 @@ async def test_get_subnet_hyperparams_not_found(subtensor, mocked_transport):
         "result": "0x00",
     }
 
-    subnet_hyperparams = await subtensor.subnet_info.get_subnet_hyperparams(
+    subnet_hyperparams = await subtensor.SubnetInfoRuntimeApi.get_subnet_hyperparams(
         netuid=404,
     )
 
@@ -121,7 +121,7 @@ async def test_get_subnet_state(subtensor, mocked_transport):
         "result": "0x01040400000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000401040104feff0300040004000400040004000400040004000402286bee04000402286bee0804000400",
     }
 
-    subnet_state = await subtensor.subnet_info.get_subnet_state(
+    subnet_state = await subtensor.SubnetInfoRuntimeApi.get_subnet_state(
         netuid=1,
     )
 
@@ -155,7 +155,7 @@ async def test_get_subnet_state_not_found(subtensor, mocked_transport):
         "result": "0x00",
     }
 
-    subnet_state = await subtensor.subnet_info.get_subnet_state(
+    subnet_state = await subtensor.SubnetInfoRuntimeApi.get_subnet_state(
         netuid=404,
     )
 

@@ -48,7 +48,7 @@ async def test_block_context_by_number(mocked_subtensor, bittensor):
 
         await bittensor.subnet(1).get()
 
-        mocked_subtensor.subnet_info.get_dynamic_info.assert_called_once_with(
+        mocked_subtensor.SubnetInfoRuntimeApi.get_dynamic_info.assert_called_once_with(
             1,
             block_hash="0x3fe8c77075d8194ed0bb7fd70d7b8cc91c12826c7f04df9f04c4235f0f6a966b",
         )
@@ -64,7 +64,7 @@ async def test_block_context_by_hash(mocked_subtensor, bittensor):
 
         await bittensor.subnet(1).get()
 
-        mocked_subtensor.subnet_info.get_dynamic_info.assert_called_once_with(
+        mocked_subtensor.SubnetInfoRuntimeApi.get_dynamic_info.assert_called_once_with(
             1,
             block_hash="0x3fe8c77075d8194ed0bb7fd70d7b8cc91c12826c7f04df9f04c4235f0f6a966b",
         )
@@ -86,7 +86,7 @@ async def test_nested_context(mocked_subtensor, bittensor):
 
         await bittensor.subnet(1).get()
 
-        mocked_subtensor.subnet_info.get_dynamic_info.assert_called_once_with(
+        mocked_subtensor.SubnetInfoRuntimeApi.get_dynamic_info.assert_called_once_with(
             1,
             block_hash=NEWEST_BLOCK,
         )
@@ -99,14 +99,14 @@ async def test_nested_context(mocked_subtensor, bittensor):
 
             await bittensor.subnet(1).get()
 
-            mocked_subtensor.subnet_info.get_dynamic_info.assert_called_with(
+            mocked_subtensor.SubnetInfoRuntimeApi.get_dynamic_info.assert_called_with(
                 1,
                 block_hash=OLDEST_BLOCK,
             )
 
         await bittensor.subnet(1).get()
 
-        mocked_subtensor.subnet_info.get_dynamic_info.assert_called_with(
+        mocked_subtensor.SubnetInfoRuntimeApi.get_dynamic_info.assert_called_with(
             1,
             block_hash=NEWEST_BLOCK,
         )

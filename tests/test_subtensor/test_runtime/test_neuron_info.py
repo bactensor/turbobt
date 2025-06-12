@@ -7,7 +7,7 @@ async def test_get_neuron(subtensor, mocked_transport):
         "result": "0x0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000401000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000002286bee0000000000000000010000feff0300",
     }
 
-    neuron = await subtensor.neuron_info.get_neuron(
+    neuron = await subtensor.NeuronInfoRuntimeApi.get_neuron(
         netuid=1,
         uid=0,
     )
@@ -59,7 +59,7 @@ async def test_get_neuron_uid_not_found(subtensor, mocked_transport):
         "result": "0x00",
     }
 
-    neuron = await subtensor.neuron_info.get_neuron(
+    neuron = await subtensor.NeuronInfoRuntimeApi.get_neuron(
         netuid=1,
         uid=404,
     )
@@ -73,7 +73,7 @@ async def test_get_neuron_netuid_not_found(subtensor, mocked_transport):
         "result": "0x00",
     }
 
-    neuron = await subtensor.neuron_info.get_neuron(
+    neuron = await subtensor.NeuronInfoRuntimeApi.get_neuron(
         netuid=404,
         uid=0,
     )
@@ -89,7 +89,7 @@ async def test_get_neurons_lite(subtensor, mocked_transport):
         "result": "0x0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000401000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000002286bee00000000000000000000",
     }
 
-    neurons = await subtensor.neuron_info.get_neurons_lite(
+    neurons = await subtensor.NeuronInfoRuntimeApi.get_neurons_lite(
         netuid=1,
     )
 
@@ -142,7 +142,7 @@ async def test_get_neurons_lite_not_found(subtensor, mocked_transport):
         "result": "0x00",
     }
 
-    neurons = await subtensor.neuron_info.get_neurons_lite(
+    neurons = await subtensor.NeuronInfoRuntimeApi.get_neurons_lite(
         netuid=404,
     )
 

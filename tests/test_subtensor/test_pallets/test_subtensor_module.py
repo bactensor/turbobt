@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_burned_register(subtensor, alice_wallet):
-    await subtensor.subtensor_module.burned_register(
+    await subtensor.SubtensorModule.burned_register(
         netuid=1,
         hotkey=alice_wallet.hotkey.ss58_address,
         wallet=alice_wallet,
@@ -22,7 +22,7 @@ async def test_burned_register(subtensor, alice_wallet):
 
 @pytest.mark.asyncio
 async def test_commit_crv3_weights(subtensor, alice_wallet):
-    await subtensor.subtensor_module.commit_crv3_weights(
+    await subtensor.SubtensorModule.commit_crv3_weights(
         netuid=1,
         commit=b"TEST",
         reveal_round=204,
@@ -43,7 +43,7 @@ async def test_commit_crv3_weights(subtensor, alice_wallet):
 
 @pytest.mark.asyncio
 async def test_register_network(subtensor, alice_wallet):
-    await subtensor.subtensor_module.register_network(
+    await subtensor.SubtensorModule.register_network(
         hotkey=alice_wallet.hotkey.ss58_address,
         mechid=1,
         wallet=alice_wallet,
@@ -62,7 +62,7 @@ async def test_register_network(subtensor, alice_wallet):
 
 @pytest.mark.asyncio
 async def test_serve_axon(subtensor, alice_wallet):
-    await subtensor.subtensor_module.serve_axon(
+    await subtensor.SubtensorModule.serve_axon(
         netuid=1,
         ip="192.168.0.2",
         port=8080,
@@ -90,7 +90,7 @@ async def test_serve_axon(subtensor, alice_wallet):
 
 @pytest.mark.asyncio
 async def test_serve_axon_tls(subtensor, alice_wallet):
-    await subtensor.subtensor_module.serve_axon_tls(
+    await subtensor.SubtensorModule.serve_axon_tls(
         netuid=1,
         ip="192.168.0.2",
         port=8080,
@@ -149,7 +149,7 @@ async def test_evm_addresses_fetch(subtensor, mocked_transport):
         ],
     }
 
-    evm_addresses = await subtensor.subtensor_module.AssociatedEvmAddress.query(12)
+    evm_addresses = await subtensor.SubtensorModule.AssociatedEvmAddress.query(12)
 
     assert evm_addresses == [
         ((12, 163), ("0x77407f1709d339f5583feac922c0592e248f785f", 5668432)),

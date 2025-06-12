@@ -37,13 +37,13 @@ class Subtensor(Substrate):
 
         super().__init__(*args, **kwargs)
 
-        self.admin_utils = AdminUtils(self)
-        self.commitments = Commitments(self)
-        self.subtensor_module = SubtensorModule(self)
-        self.sudo = Sudo(self)
+        self.AdminUtils = AdminUtils(self)
+        self.Commitments = Commitments(self)
+        self.SubtensorModule = SubtensorModule(self)
+        self.Sudo = Sudo(self)
 
-        self.neuron_info = NeuronInfoRuntimeApi(self)
-        self.subnet_info = SubnetInfoRuntimeApi(self)
+        self.NeuronInfoRuntimeApi = NeuronInfoRuntimeApi(self)
+        self.SubnetInfoRuntimeApi = SubnetInfoRuntimeApi(self)
 
     async def api_call(
         self,

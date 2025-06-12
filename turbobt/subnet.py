@@ -42,7 +42,7 @@ class SubnetCommitments:
         self.client = client
 
     async def get(self, hotkey: str, block_hash: str | None = None) -> bytes | None:
-        commitments = await self.client.subtensor.commitments.CommitmentOf.get(
+        commitments = await self.client.subtensor.Commitments.CommitmentOf.get(
             self.subnet.netuid,
             hotkey,
             block_hash=block_hash or get_ctx_block_hash(),
@@ -58,7 +58,7 @@ class SubnetCommitments:
         )
 
     async def fetch(self, block_hash: str | None = None) -> dict[str, bytes]:
-        commitments = await self.client.subtensor.commitments.CommitmentOf.query(
+        commitments = await self.client.subtensor.Commitments.CommitmentOf.query(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -80,7 +80,7 @@ class SubnetCommitments:
         data: bytes,
         wallet: bittensor_wallet.Wallet | None = None,
     ):
-        return await self.client.subtensor.commitments.set_commitment(
+        return await self.client.subtensor.Commitments.set_commitment(
             self.subnet.netuid,
             {
                 "fields": [
@@ -123,7 +123,7 @@ class SubnetNeurons:
     ) -> None:
         # TODO netuid = 0
 
-        extrinsic = await self.subnet.client.subtensor.subtensor_module.burned_register(
+        extrinsic = await self.subnet.client.subtensor.SubtensorModule.burned_register(
             netuid=self.subnet.netuid,
             hotkey=hotkey.ss58_address,
             wallet=wallet or self.subnet.client.wallet,
@@ -141,7 +141,7 @@ class SubnetNeurons:
         wallet: bittensor_wallet.Wallet | None = None,
     ):
         if certificate:
-            extrinsic = await self.subnet.client.subtensor.subtensor_module.serve_axon_tls(
+            extrinsic = await self.subnet.client.subtensor.SubtensorModule.serve_axon_tls(
                 certificate=certificate,
                 ip=ip,
                 netuid=self.subnet.netuid,
@@ -151,7 +151,7 @@ class SubnetNeurons:
                 wallet=wallet or self.subnet.client.wallet,
             )
         else:
-            extrinsic = await self.subnet.client.subtensor.subtensor_module.serve_axon(
+            extrinsic = await self.subnet.client.subtensor.SubtensorModule.serve_axon(
                 ip=ip,
                 netuid=self.subnet.netuid,
                 port=port,
@@ -164,7 +164,7 @@ class SubnetNeurons:
             await extrinsic.wait_for_finalization()
 
     async def all(self, block_hash: str | None = None) -> list[Neuron]:
-        neurons = await self.subnet.client.subtensor.neuron_info.get_neurons_lite(
+        neurons = await self.subnet.client.subtensor.NeuronInfoRuntimeApi.get_neurons_lite(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -246,7 +246,7 @@ class SubnetWeights:
                 block_time=block_time,
             )
 
-        extrinsic = await self.client.subtensor.subtensor_module.commit_crv3_weights(
+        extrinsic = await self.client.subtensor.SubtensorModule.commit_crv3_weights(
             self.subnet.netuid,
             commit,
             reveal_round,
@@ -258,7 +258,7 @@ class SubnetWeights:
         return reveal_round
 
     async def get(self, uid: int, block_hash: str | None = None) -> dict[Uid, float]:
-        weights = await self.client.subtensor.subtensor_module.Weights.get(
+        weights = await self.client.subtensor.SubtensorModule.Weights.get(
             self.subnet.netuid,
             uid,
             block_hash=block_hash or get_ctx_block_hash(),
@@ -270,7 +270,7 @@ class SubnetWeights:
         return {uid: u16_proportion_to_float(weight) for uid, weight in weights}
 
     async def fetch(self, block_hash: str | None = None) -> dict[Uid, dict[Uid, float]]:
-        weights = await self.client.subtensor.subtensor_module.Weights.query(
+        weights = await self.client.subtensor.SubtensorModule.Weights.query(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -295,7 +295,7 @@ class SubnetWeights:
             tuple[bytes, int],
         ],
     ]:
-        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommits.query(
+        weights = await self.client.subtensor.SubtensorModule.CRV3WeightCommits.query(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -336,7 +336,7 @@ class SubnetReference:
         self.weights = SubnetWeights(self)
 
     async def get(self, block_hash: str | None = None):
-        dynamic_info = await self.client.subtensor.subnet_info.get_dynamic_info(
+        dynamic_info = await self.client.subtensor.SubnetInfoRuntimeApi.get_dynamic_info(
             self.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -358,7 +358,7 @@ class SubnetReference:
         return subnet
 
     async def get_hyperparameters(self, block_hash: str | None = None) -> SubnetHyperparams | None:
-        return await self.client.subtensor.subnet_info.get_subnet_hyperparams(
+        return await self.client.subtensor.SubnetInfoRuntimeApi.get_subnet_hyperparams(
             self.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -380,7 +380,7 @@ class SubnetReference:
         return await self.neuron(uid, hotkey).get(block_hash)
 
     async def get_state(self, block_hash: str | None = None) -> SubnetState | None:
-        return await self.client.subtensor.subnet_info.get_subnet_state(
+        return await self.client.subtensor.SubnetInfoRuntimeApi.get_subnet_state(
             self.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -438,7 +438,7 @@ class Subnets:
     # TODO create?
     async def register(self, wallet=None, **kwargs):
         # register_network_with_identity
-        extrinsic = await self.client.subtensor.subtensor_module.register_network(
+        extrinsic = await self.client.subtensor.SubtensorModule.register_network(
             hotkey=wallet.hotkey.ss58_address,
             mechid=1,
             wallet=wallet,

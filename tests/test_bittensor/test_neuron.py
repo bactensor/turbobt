@@ -7,7 +7,7 @@ from turbobt.subnet import SubnetReference
 
 @pytest.mark.asyncio
 async def test_get(mocked_subtensor, bittensor):
-    mocked_subtensor.neuron_info.get_neuron.return_value = {
+    mocked_subtensor.NeuronInfoRuntimeApi.get_neuron.return_value = {
         "hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
         "coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
         "uid": 0,

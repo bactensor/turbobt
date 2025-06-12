@@ -8,7 +8,7 @@ from turbobt.subnet import Subnet, SubnetReference
 
 @pytest.mark.asyncio
 async def test_get(mocked_subtensor, bittensor):
-    mocked_subtensor.subnet_info.get_dynamic_info.return_value = {
+    mocked_subtensor.SubnetInfoRuntimeApi.get_dynamic_info.return_value = {
         "subnet_name": "apex",
         "token_symbol": "α",
         "owner_hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
@@ -34,7 +34,7 @@ async def test_get(mocked_subtensor, bittensor):
 
 @pytest.mark.asyncio
 async def test_get_hyperparameters(mocked_subtensor, bittensor):
-    mocked_subtensor.subnet_info.get_subnet_hyperparams.return_value = {
+    mocked_subtensor.SubnetInfoRuntimeApi.get_subnet_hyperparams.return_value = {
         "activity_cutoff": 5000,
         "adjustment_alpha": 0,
         "adjustment_interval": 100,
@@ -100,7 +100,7 @@ async def test_get_hyperparameters(mocked_subtensor, bittensor):
 
 @pytest.mark.asyncio
 async def test_get_state(mocked_subtensor, bittensor):
-    mocked_subtensor.subnet_info.get_subnet_state.return_value = {
+    mocked_subtensor.SubnetInfoRuntimeApi.get_subnet_state.return_value = {
         "active": [True],
         "alpha_stake": [1000000000],
         "block_at_registration": [0],
@@ -148,7 +148,7 @@ async def test_get_state(mocked_subtensor, bittensor):
 
 @pytest.mark.asyncio
 async def test_list_neurons(mocked_subtensor, bittensor):
-    mocked_subtensor.neuron_info.get_neurons_lite.return_value = [
+    mocked_subtensor.NeuronInfoRuntimeApi.get_neurons_lite.return_value = [
         {
             "hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
             "coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
@@ -230,7 +230,7 @@ async def test_list_validators(mocked_subtensor, bittensor):
     mocked_subtensor.chain.getBlockHash.return_value = (
         "0x2bb80cc429296b4da191bcec87d4b526ca0e407b4756f2a387a87d3b8e26ae42"
     )
-    mocked_subtensor.subnet_info.get_subnet_state.return_value = {
+    mocked_subtensor.SubnetInfoRuntimeApi.get_subnet_state.return_value = {
         "active": [True],
         "alpha_stake": [1000000000],
         "block_at_registration": [0],
@@ -250,7 +250,7 @@ async def test_list_validators(mocked_subtensor, bittensor):
         "trust": [0],
         "validator_permit": [True],
     }
-    mocked_subtensor.subnet_info.get_subnet_hyperparams.return_value = {
+    mocked_subtensor.SubnetInfoRuntimeApi.get_subnet_hyperparams.return_value = {
         "activity_cutoff": 5000,
         "adjustment_alpha": 0,
         "adjustment_interval": 100,
@@ -279,7 +279,7 @@ async def test_list_validators(mocked_subtensor, bittensor):
         "weights_rate_limit": 100,
         "weights_version": 0,
     }
-    mocked_subtensor.neuron_info.get_neurons_lite.return_value = [
+    mocked_subtensor.NeuronInfoRuntimeApi.get_neurons_lite.return_value = [
         {
             "hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
             "coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
@@ -363,7 +363,7 @@ async def test_register_subnet(mocked_subtensor, bittensor, alice_wallet):
         wallet=alice_wallet,
     )
 
-    mocked_subtensor.subtensor_module.register_network.assert_awaited_once_with(
+    mocked_subtensor.SubtensorModule.register_network.assert_awaited_once_with(
         hotkey="5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
         mechid=1,
         wallet=alice_wallet,
