@@ -1,7 +1,7 @@
 import ipaddress
 import pytest
 
-from turbobt.neuron import AxonInfo, Neuron, PrometheusInfo
+from turbobt.neuron import AxonInfo, NeuronLite, PrometheusInfo
 from turbobt.subnet import SubnetReference
 
 
@@ -51,7 +51,7 @@ async def test_get(mocked_subtensor, bittensor):
     neuron_ref = subnet_ref.neuron(0)
     neuron = await neuron_ref.get()
 
-    assert neuron == Neuron(
+    assert neuron == NeuronLite(
         active=True,
         axon_info=AxonInfo(
             ip=ipaddress.IPv4Address("0.0.0.0"),

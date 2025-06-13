@@ -71,7 +71,7 @@ class PrometheusInfo:
     kw_only=True,
     order=True,
 )
-class Neuron:
+class NeuronLite:
     subnet: Subnet
     # netuid: int
     uid: int
@@ -121,13 +121,49 @@ class Neuron:
         return hash(self.hotkey or self.uid)
 
 
+@dataclasses.dataclass(
+    kw_only=True,
+    order=True,
+)
+class Neuron(NeuronLite):
+    weights: dict[int, float]
+
+    @classmethod
+    def from_dict(cls, neuron: dict, *, subnet: Subnet):
+        return cls(
+            subnet=subnet,
+            # netuid=neuron["netuid"],
+            active=neuron["active"],
+            axon_info=AxonInfo.from_dict(neuron["axon_info"]),
+            coldkey=neuron["coldkey"],
+            consensus=u16_proportion_to_float(neuron["consensus"]),
+            dividends=u16_proportion_to_float(neuron["dividends"]),
+            emission=neuron["emission"] / 1e9,  # TODO
+            hotkey=neuron["hotkey"],
+            incentive=u16_proportion_to_float(neuron["incentive"]),
+            last_update=neuron["last_update"],
+            prometheus_info=PrometheusInfo.from_dict(neuron["prometheus_info"]),
+            pruning_score=neuron["pruning_score"],
+            rank=u16_proportion_to_float(neuron["rank"]),
+            stake=next(value / 1_000_000_000 for value in neuron["stake"].values()),
+            trust=u16_proportion_to_float(neuron["trust"]),
+            uid=neuron["uid"],
+            validator_permit=neuron["validator_permit"],
+            validator_trust=u16_proportion_to_float(neuron["validator_trust"]),
+            weights={
+                uid: u16_proportion_to_float(weight)
+                for uid, weight in neuron["weights"]
+            },
+        )
+
+
 @dataclasses.dataclass
 class NeuronReference:
     subnet: Subnet
     uid: int | None = None
     hotkey: str | None = None
 
-    async def get(self, block_hash: str | None = None) -> Neuron | None:
+    async def get(self, block_hash: str | None = None) -> NeuronLite | None:
         if self.uid is not None:
             uid = self.uid
         elif self.hotkey is not None:
@@ -151,7 +187,7 @@ class NeuronReference:
         if not neuron_info:
             return None
 
-        neuron = Neuron.from_dict(
+        neuron = NeuronLite.from_dict(
             neuron_info,
             subnet=self.subnet,
         )

@@ -2,7 +2,7 @@ import ipaddress
 
 import pytest
 
-from turbobt.neuron import AxonInfo, Neuron, PrometheusInfo
+from turbobt.neuron import AxonInfo, NeuronLite, PrometheusInfo
 from turbobt.subnet import Subnet, SubnetReference
 
 
@@ -192,7 +192,7 @@ async def test_list_neurons(mocked_subtensor, bittensor):
     subnet_neurons = await subnet_ref.list_neurons()
 
     assert subnet_neurons == [
-        Neuron(
+        NeuronLite(
             active=True,
             axon_info=AxonInfo(
                 ip=ipaddress.IPv4Address("0.0.0.0"),
@@ -324,7 +324,7 @@ async def test_list_validators(mocked_subtensor, bittensor):
     subnet_validators = await subnet_ref.list_validators()
 
     assert subnet_validators == [
-        Neuron(
+        NeuronLite(
             active=True,
             axon_info=AxonInfo(
                 ip=ipaddress.IPv4Address("0.0.0.0"),

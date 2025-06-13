@@ -146,4 +146,4 @@ async def test_get_neurons_lite_not_found(subtensor, mocked_transport):
         netuid=404,
     )
 
-    assert neurons is None
+    assert neurons == []

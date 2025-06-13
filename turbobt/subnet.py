@@ -18,6 +18,7 @@ from .block import get_ctx_block_hash
 from .neuron import (
     AxonProtocolEnum,
     Neuron,
+    NeuronLite,
     NeuronReference,
 )
 from .substrate._scalecodec import (
@@ -163,14 +164,25 @@ class SubnetNeurons:
         async with asyncio.timeout(timeout):
             await extrinsic.wait_for_finalization()
 
-    async def all(self, block_hash: str | None = None) -> list[Neuron]:
-        neurons = await self.subnet.client.subtensor.NeuronInfoRuntimeApi.get_neurons_lite(
+    async def all(self, lite: bool = True, block_hash: str | None = None) -> list[Neuron] | list[NeuronLite]:
+        if lite:
+            neurons = await self.subnet.client.subtensor.NeuronInfoRuntimeApi.get_neurons_lite(
+                self.subnet.netuid,
+                block_hash=block_hash or get_ctx_block_hash(),
+            )
+
+            return [
+                NeuronLite.from_dict(
+                    neuron,
+                    subnet=self.subnet,
+                )
+                for neuron in neurons
+            ]
+
+        neurons = await self.subnet.client.subtensor.NeuronInfoRuntimeApi.get_neurons(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
-
-        if neurons is None:
-            return []
 
         return [
             Neuron.from_dict(
@@ -180,7 +192,7 @@ class SubnetNeurons:
             for neuron in neurons
         ]
 
-    async def validators(self, block_hash: str | None = None) -> list[Neuron]:
+    async def validators(self, block_hash: str | None = None) -> list[NeuronLite]:
         if not block_hash:
             block_hash = get_ctx_block_hash()
 
@@ -367,7 +379,7 @@ class SubnetReference:
         self,
         key: str | int,
         block_hash: str | None = None,
-    ) -> Neuron | None:
+    ) -> NeuronLite | None:
         if isinstance(key, str):
             uid = None
             hotkey = key
@@ -385,10 +397,10 @@ class SubnetReference:
             block_hash=block_hash or get_ctx_block_hash(),
         )
 
-    async def list_neurons(self, block_hash: str | None = None) -> list[Neuron]:
-        return await self.neurons.all(block_hash)
+    async def list_neurons(self, lite: bool = True, block_hash: str | None = None) -> list[Neuron] | list[NeuronLite]:
+        return await self.neurons.all(lite, block_hash)
 
-    async def list_validators(self, block_hash: str | None = None) -> list[Neuron]:
+    async def list_validators(self, block_hash: str | None = None) -> list[NeuronLite]:
         return await self.neurons.validators(block_hash)
 
     def neuron(

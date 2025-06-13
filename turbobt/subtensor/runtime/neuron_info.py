@@ -11,13 +11,17 @@ class NeuronLite(typing.TypedDict):
     uid: int
 
 
+class Neuron(NeuronLite):
+    weights: list[int, int]
+
+
 class NeuronInfoRuntimeApi(RuntimeApi):
     async def get_neuron(
         self,
         netuid: int,
         uid: int,
         block_hash: str | None = None,
-    ) -> dict | None:
+    ) -> Neuron | None:
         """
         Fetches information about a specific neuron in a subnet.
 
@@ -28,7 +32,7 @@ class NeuronInfoRuntimeApi(RuntimeApi):
         :param block_hash: Optional block hash to query the neuron state at a specific block.
         :type block_hash: str, optional
         :return: A dictionary containing neuron information or None if the neuron does not exist.
-        :rtype: dict or None
+        :rtype: Neuron or None
         """
 
         neuron = await self.subtensor.api_call(
@@ -42,13 +46,41 @@ class NeuronInfoRuntimeApi(RuntimeApi):
         if not neuron:
             return None
 
-        return self._decode_neuron(neuron)
+        return self._decode_neuron_lite(neuron)
+
+    async def get_neurons(
+        self,
+        netuid: int,
+        block_hash=None,
+    ) -> list[NeuronLite] | None:
+        """
+        Fetches all neurons in a subnet.
+
+        :param netuid: The unique identifier of the subnet.
+        :type netuid: int
+        :param block_hash: Optional block hash to query the neuron states at a specific block.
+        :type block_hash: str, optional
+        :return: A list of dictionaries containing lite neuron information.
+        :rtype: list[Neuron]
+        """
+
+        result = await self.subtensor.api_call(
+            "NeuronInfoRuntimeApi",
+            "get_neurons",
+            netuid=netuid,
+            block_hash=block_hash,
+        )
+
+        return [
+            self._decode_neuron(neuron)
+            for neuron in result
+        ]
 
     async def get_neurons_lite(
         self,
         netuid: int,
         block_hash=None,
-    ) -> list[NeuronLite] | None:
+    ) -> list[NeuronLite]:
         """
         Fetches a lite version of all neurons in a subnet.
 
@@ -56,8 +88,8 @@ class NeuronInfoRuntimeApi(RuntimeApi):
         :type netuid: int
         :param block_hash: Optional block hash to query the neuron states at a specific block.
         :type block_hash: str, optional
-        :return: A list of dictionaries containing lite neuron information, or None if no neurons are found.
-        :rtype: list[NeuronLite] or None
+        :return: A list of dictionaries containing lite neuron information.
+        :rtype: list[NeuronLite]
         """
 
         result = await self.subtensor.api_call(
@@ -67,15 +99,17 @@ class NeuronInfoRuntimeApi(RuntimeApi):
             block_hash=block_hash,
         )
 
-        if not result:
-            return None
-
         return [
-            self._decode_neuron(neuron)
+            self._decode_neuron_lite(neuron)
             for neuron in result
         ]
 
     def _decode_neuron(self, neuron: dict) -> dict:
+        neuron = self._decode_neuron_lite(neuron)
+
+        return neuron
+
+    def _decode_neuron_lite(self, neuron: dict) -> dict:
         for key in ("coldkey", "hotkey"):
             neuron[key] = scalecodec.utils.ss58.ss58_encode(neuron[key])
 
