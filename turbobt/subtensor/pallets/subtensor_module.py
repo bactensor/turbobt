@@ -6,6 +6,7 @@ import ipaddress
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
+from ...substrate.pallets.author import Era
 from ..types import (
     HotKey,
     NetUid,
@@ -68,6 +69,7 @@ class SubtensorModule(Pallet):
         netuid: int,
         hotkey: str,
         wallet: bittensor_wallet.Wallet,
+        era: Era | None = ...,
     ) -> ExtrinsicResult:
         """
         Registers a neuron on the Bittensor network by recycling TAO.
@@ -90,6 +92,7 @@ class SubtensorModule(Pallet):
                 "hotkey": hotkey,
             },
             key=wallet.coldkey,
+            era=era,
         )
 
     async def commit_crv3_weights(
@@ -98,6 +101,7 @@ class SubtensorModule(Pallet):
         commit: bytes,
         reveal_round: int,
         wallet: bittensor_wallet.Wallet,
+        era: Era | None = ...,
     ) -> ExtrinsicResult:
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
@@ -108,6 +112,7 @@ class SubtensorModule(Pallet):
                 "reveal_round": reveal_round,
             },
             key=wallet.hotkey,
+            era=era,
         )
 
     async def register_network(
@@ -115,6 +120,7 @@ class SubtensorModule(Pallet):
         hotkey: bittensor_wallet.Keypair,
         mechid: int,
         wallet: bittensor_wallet.Wallet,
+        era: Era | None = ...,
     ) -> ExtrinsicResult:
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
@@ -124,6 +130,7 @@ class SubtensorModule(Pallet):
                 "mechid": mechid,
             },
             key=wallet.coldkey,
+            era=era,
         )
 
     async def serve_axon(
@@ -136,6 +143,7 @@ class SubtensorModule(Pallet):
         version: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
+        era: Era | None = ...,
     ) -> ExtrinsicResult:
         """
         Submits an extrinsic to serve an Axon endpoint on the Bittensor network.
@@ -174,6 +182,7 @@ class SubtensorModule(Pallet):
                 "version": version,
             },
             key=wallet.hotkey,
+            era=era,
         )
 
     async def serve_axon_tls(
@@ -187,6 +196,7 @@ class SubtensorModule(Pallet):
         version: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
+        era: Era | None = ...,
     ) -> ExtrinsicResult:
         """
         Submits an extrinsic to serve an Axon endpoint on the Bittensor network.
@@ -230,4 +240,5 @@ class SubtensorModule(Pallet):
                 "version": version,
             },
             key=wallet.hotkey,
+            era=era,
         )

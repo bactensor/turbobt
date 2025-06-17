@@ -10,6 +10,12 @@ from ._base import Pallet
 from .state import RuntimeVersion
 
 
+class Era(typing.TypedDict):
+    period: int
+    phase: int | None
+    current: int | None
+
+
 class Author(Pallet):
     async def submitAndWatchExtrinsic(
         self,
@@ -17,7 +23,7 @@ class Author(Pallet):
         call_function: str,
         call_args: dict[str, typing.Any],
         key: bittensor_wallet.Keypair,
-        era: dict | None = None,
+        era: Era | None = ...,
         nonce: int | None = None,
     ) -> ExtrinsicResult:
         """
@@ -53,8 +59,15 @@ class Author(Pallet):
             }
         )
 
-        if not era:
+        if era is ...:
+            era = Era(period=3)
+        elif era is None:
             era = {}
+
+        if era and "current" not in era and "phase" not in era:
+            header = await self.substrate.chain.getHeader()
+
+            era["current"] = header["number"]
 
         era_obj = self.substrate._registry.create_scale_object("Era")
         era_obj.encode(era or "00")

@@ -5,6 +5,7 @@ import typing
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
+from ...substrate.pallets.author import Era
 from ..types import (
     HotKey,
     NetUid,
@@ -41,6 +42,7 @@ class Commitments(Pallet):
         netuid: int,
         info: CommitmentInfo,
         wallet: bittensor_wallet.Wallet,
+        era: Era | None = ...,
     ) -> ExtrinsicResult:
         """
         Sets the commitment info for a given hotkey on a subnet.
@@ -62,5 +64,6 @@ class Commitments(Pallet):
                 "netuid": netuid,
                 "info": info,
             },
+            era=era,
             key=wallet.hotkey,
         )
