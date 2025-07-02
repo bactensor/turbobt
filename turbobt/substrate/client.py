@@ -21,6 +21,7 @@ from .pallets import (
     Chain,
     State,
     System,
+    Timestamp,
 )
 from .runtime import (
     Metadata,
@@ -59,6 +60,7 @@ class Substrate:
         self.metadata = Metadata(self)
         self.state = State(self)
         self.system = System(self)
+        self.timestamp = Timestamp(self)
 
         self.__lock = asyncio.Lock()
 
