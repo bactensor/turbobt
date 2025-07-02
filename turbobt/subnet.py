@@ -26,6 +26,7 @@ from .substrate._scalecodec import (
 )
 
 if typing.TYPE_CHECKING:
+    from .block import Block
     from .client import Bittensor
 
 
@@ -420,6 +421,27 @@ class Subnet(SubnetReference):
         super().__post_init__(*args, **kwargs)
 
         self.neurons = SubnetNeurons(self)
+
+    def epoch(self, block_number: int) -> range:
+        """
+        The logic from Subtensor's Rust function:
+            pub fn blocks_until_next_epoch(netuid: NetUid, tempo: u16, block_number: u64) -> u64
+
+        See https://github.com/opentensor/subtensor/blob/f8db5d06c0439d4fb5db66be3632e4d89a8829c0/pallets/subtensor/src/coinbase/run_coinbase.rs#L846
+        """
+
+        netuid_plus_one = self.netuid + 1
+        tempo_plus_one = self.tempo + 1
+        adjusted_block = block_number + netuid_plus_one
+        remainder = adjusted_block % tempo_plus_one
+
+        if remainder == self.tempo:
+            remainder = -1
+
+        return range(
+            block_number - remainder - 1,
+            block_number - remainder + self.tempo,
+        )
 
 
 class Subnets:
