@@ -72,7 +72,7 @@ async def test_get_subnet_hyperparams(subtensor, mocked_transport):
         "kappa": 32767,
         "immunity_period": 4096,
         "min_allowed_weights": 0,
-        "max_weights_limit": 1.0,
+        "max_weights_limit": 65535,
         "tempo": 100,
         "min_difficulty": 10000000,
         "max_difficulty": 4611686018427387903,

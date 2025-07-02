@@ -1,7 +1,6 @@
 import typing
 import scalecodec.utils.ss58
 
-from ...substrate._scalecodec import u16_proportion_to_float
 from ._base import RuntimeApi
 
 
@@ -16,7 +15,7 @@ class DynamicInfo(typing.TypedDict):
 
 
 class SubnetHyperparams(typing.TypedDict):
-    max_weights_limit: float
+    max_weights_limit: int
     # ...
 
 
@@ -88,12 +87,6 @@ class SubnetInfoRuntimeApi(RuntimeApi):
 
         if not hyperparameters:
             return None
-
-        # TODO min_allowed_weights
-        # TODO int/float?
-        hyperparameters["max_weights_limit"] = u16_proportion_to_float(
-            hyperparameters["max_weights_limit"],
-        )
 
         return hyperparameters
 
