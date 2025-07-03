@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextvars
+import datetime
 import typing
 
 if typing.TYPE_CHECKING:
@@ -93,6 +94,14 @@ class Block:
 
     async def __aexit__(self, *args, **kwargs):
         _block_hash.reset(self._token)
+
+    async def get_timestamp(self) -> datetime.datetime:
+        timestamp = await self.client.subtensor.timestamp.Now.get(self.hash)
+
+        return datetime.datetime.fromtimestamp(
+            timestamp / 1000,
+            tz=datetime.timezone.utc,
+        )
 
 
 class Blocks:

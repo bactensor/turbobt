@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 
@@ -110,3 +112,22 @@ async def test_nested_context(mocked_subtensor, bittensor):
             1,
             block_hash=NEWEST_BLOCK,
         )
+
+
+@pytest.mark.asyncio
+async def test_block_get_timestamp(mocked_subtensor, bittensor):
+    mocked_subtensor.chain.getBlockHash.return_value = "0x3fe8c77075d8194ed0bb7fd70d7b8cc91c12826c7f04df9f04c4235f0f6a966b"
+    mocked_subtensor.timestamp.Now.get.return_value = 1751463936000
+
+    block = await bittensor.head.get()
+    block_timestamp = await block.get_timestamp()
+
+    assert block_timestamp == datetime.datetime(
+        2025, 7, 2,
+        13, 45, 36,
+        tzinfo=datetime.timezone.utc,
+    )
+
+    mocked_subtensor.timestamp.Now.get.assert_awaited_once_with(
+        "0x3fe8c77075d8194ed0bb7fd70d7b8cc91c12826c7f04df9f04c4235f0f6a966b",
+    )
