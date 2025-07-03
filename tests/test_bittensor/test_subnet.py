@@ -146,6 +146,43 @@ async def test_get_state(mocked_subtensor, bittensor):
     }
 
 
+@pytest.mark.parametrize(
+    "block_number,epoch",
+    [
+        (
+            1000,
+            range(719, 1080),
+        ),
+        (
+            1079,
+            range(719, 1080),
+        ),
+        (
+            1080,
+            range(1080, 1441),
+        ),
+        (
+            1081,
+            range(1080, 1441),
+        ),
+    ],
+)
+@pytest.mark.asyncio
+async def test_subnet_epoch(mocked_subtensor, bittensor, block_number, epoch):
+    mocked_subtensor.subnet_info.get_dynamic_info.return_value = {
+        "subnet_name": "apex",
+        "token_symbol": "α",
+        "owner_hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
+        "owner_coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
+        "tempo": 360,
+        "subnet_identity": None,
+    }
+
+    subnet = await bittensor.subnet(1).get()
+
+    assert subnet.epoch(block_number) == epoch
+
+
 @pytest.mark.asyncio
 async def test_list_neurons(mocked_subtensor, bittensor):
     mocked_subtensor.neuron_info.get_neurons_lite.return_value = [
