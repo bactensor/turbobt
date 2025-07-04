@@ -6,6 +6,7 @@ async def test_burned_register(subtensor, alice_wallet):
     await subtensor.subtensor_module.burned_register(
         netuid=1,
         hotkey=alice_wallet.hotkey.ss58_address,
+        era=None,
         wallet=alice_wallet,
     )
 
@@ -16,6 +17,7 @@ async def test_burned_register(subtensor, alice_wallet):
             "netuid": 1,
             "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
         },
+        era=None,
         key=alice_wallet.coldkey,
     )
 
@@ -26,6 +28,7 @@ async def test_commit_crv3_weights(subtensor, alice_wallet):
         netuid=1,
         commit=b"TEST",
         reveal_round=204,
+        era=None,
         wallet=alice_wallet,
     )
 
@@ -37,6 +40,7 @@ async def test_commit_crv3_weights(subtensor, alice_wallet):
             "commit": "0x54455354",
             "reveal_round": 204,
         },
+        era=None,
         key=alice_wallet.coldkey,
     )
 
@@ -46,6 +50,7 @@ async def test_register_network(subtensor, alice_wallet):
     await subtensor.subtensor_module.register_network(
         hotkey=alice_wallet.hotkey.ss58_address,
         mechid=1,
+        era=None,
         wallet=alice_wallet,
     )
 
@@ -56,6 +61,7 @@ async def test_register_network(subtensor, alice_wallet):
             "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
             "mechid": 1,
         },
+        era=None,
         key=alice_wallet.coldkey,
     )
 
@@ -69,6 +75,7 @@ async def test_serve_axon(subtensor, alice_wallet):
         wallet=alice_wallet,
         protocol=4,
         version=100,
+        era=None,
     )
 
     subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
@@ -84,6 +91,7 @@ async def test_serve_axon(subtensor, alice_wallet):
             "protocol": 4,
             "version": 100,
         },
+        era=None,
         key=alice_wallet.hotkey,
     )
 
@@ -98,6 +106,7 @@ async def test_serve_axon_tls(subtensor, alice_wallet):
         wallet=alice_wallet,
         protocol=4,
         version=100,
+        era=None,
     )
 
     subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
@@ -114,6 +123,7 @@ async def test_serve_axon_tls(subtensor, alice_wallet):
             "protocol": 4,
             "version": 100,
         },
+        era=None,
         key=alice_wallet.hotkey,
     )
 
