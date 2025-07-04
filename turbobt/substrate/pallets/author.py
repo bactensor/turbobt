@@ -1,4 +1,5 @@
 import asyncio
+import dataclasses
 import hashlib
 import typing
 
@@ -10,10 +11,23 @@ from ._base import Pallet
 from .state import RuntimeVersion
 
 
-class Era(typing.TypedDict):
+@dataclasses.dataclass
+class Era:
+    """
+    An era to describe the longevity of a transaction.
+
+    Attributes:
+        period: (int): The period of validity from the block hash found in the signing material.
+        phase: (int | None): The phase in the period that this transaction's lifetime begins (and, importantly, implies which block hash is included in the signature material). If the `period` is greater than 1 << 12, then it will be a factor of the times greater than 1<<12 that `period` is.
+        current (int | None): If phase not specified explicitly calculate it from the current block.
+    """
+
     period: int
-    phase: int | None
-    current: int | None
+    phase: int | None = None
+    current: int | None = None
+
+
+DEFAULT_ERA = Era(period=4)
 
 
 class Author(Pallet):
@@ -23,7 +37,7 @@ class Author(Pallet):
         call_function: str,
         call_args: dict[str, typing.Any],
         key: bittensor_wallet.Keypair,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
         nonce: int | None = None,
     ) -> ExtrinsicResult:
         """
@@ -59,24 +73,29 @@ class Author(Pallet):
             }
         )
 
-        if era is ...:
-            era = Era(period=3)
-        elif era is None:
-            era = {}
-
-        if era and "current" not in era and "phase" not in era:
-            header = await self.substrate.chain.getHeader()
-
-            era["current"] = header["number"]
-
         era_obj = self.substrate._registry.create_scale_object("Era")
-        era_obj.encode(era or "00")
+
+        if not era:
+            era_obj.encode("00")
+        else:
+            if era.current is None and era.phase is None:
+                header = await self.substrate.chain.getHeader()
+                era = Era(
+                    period=era.period,
+                    current=header["number"],
+                )
+
+            era_obj.encode({
+                key: value
+                for key, value in dataclasses.asdict(era).items()
+                if value is not None
+            })
 
         runtime_version, nonce, genesis_hash, block_hash = await asyncio.gather(
             self.substrate.state.getRuntimeVersion(),
             self.substrate.system.accountNextIndex(key.ss58_address),
             self.substrate.chain.getBlockHash(0),
-            self.substrate.chain.getBlockHash(era_obj.birth(era.get("current"))),
+            self.substrate.chain.getBlockHash(era_obj.birth(era.current if era else None)),
         )
 
         extrinsic = self._sign(

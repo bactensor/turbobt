@@ -6,7 +6,7 @@ import ipaddress
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
-from ...substrate.pallets.author import Era
+from ...substrate.pallets.author import DEFAULT_ERA, Era
 from ..types import (
     HotKey,
     NetUid,
@@ -69,7 +69,7 @@ class SubtensorModule(Pallet):
         netuid: int,
         hotkey: str,
         wallet: bittensor_wallet.Wallet,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Registers a neuron on the Bittensor network by recycling TAO.
@@ -101,7 +101,7 @@ class SubtensorModule(Pallet):
         commit: bytes,
         reveal_round: int,
         wallet: bittensor_wallet.Wallet,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
@@ -120,7 +120,7 @@ class SubtensorModule(Pallet):
         hotkey: bittensor_wallet.Keypair,
         mechid: int,
         wallet: bittensor_wallet.Wallet,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
@@ -143,7 +143,7 @@ class SubtensorModule(Pallet):
         version: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Submits an extrinsic to serve an Axon endpoint on the Bittensor network.
@@ -196,7 +196,7 @@ class SubtensorModule(Pallet):
         version: int,
         placeholder1: int = 0,
         placeholder2: int = 0,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Submits an extrinsic to serve an Axon endpoint on the Bittensor network.

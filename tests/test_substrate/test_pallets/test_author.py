@@ -2,6 +2,8 @@ import unittest.mock
 
 import pytest
 
+import turbobt.substrate.pallets.author
+
 
 @pytest.mark.asyncio
 async def test_submit_and_watch_extrinsic(substrate, mocked_transport, alice_wallet):
@@ -35,9 +37,9 @@ async def test_submit_and_watch_extrinsic(substrate, mocked_transport, alice_wal
             "mechid": 1,
         },
         key=alice_wallet.coldkey,
-        era={
-            "period": 5,
-        },
+        era=turbobt.substrate.pallets.author.Era(
+            period=5,
+        ),
     )
 
     assert result.subscription.id == "S6KpbWmhS2jSAsc8"

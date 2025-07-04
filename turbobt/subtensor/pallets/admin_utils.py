@@ -1,7 +1,7 @@
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
-from ...substrate.pallets.author import Era
+from ...substrate.pallets.author import DEFAULT_ERA, Era
 from ._base import Pallet
 
 
@@ -11,7 +11,7 @@ class AdminUtils(Pallet):
         netuid: int,
         enabled: bool,
         wallet: bittensor_wallet.Wallet,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Enables/disables commit-reveal weights for a subnet.
@@ -42,7 +42,7 @@ class AdminUtils(Pallet):
         netuid: int,
         tempo: int,
         wallet: bittensor_wallet.Wallet,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Sets the tempo for a subnet.
@@ -73,7 +73,7 @@ class AdminUtils(Pallet):
         netuid: int,
         weights_set_rate_limit: int,
         wallet: bittensor_wallet.Wallet,
-        era: Era | None = ...,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Sets the rate limit for setting weights for a subnet.
