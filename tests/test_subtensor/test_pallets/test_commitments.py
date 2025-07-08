@@ -96,6 +96,7 @@ async def test_set_commitment(subtensor, alice_wallet):
                 ],
             ],
         },
+        era=None,
         wallet=alice_wallet,
     )
 
@@ -116,5 +117,6 @@ async def test_set_commitment(subtensor, alice_wallet):
                 ],
             },
         },
+        era=None,
         key=alice_wallet.coldkey,
     )

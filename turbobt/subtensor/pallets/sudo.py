@@ -1,6 +1,7 @@
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
+from ...substrate.pallets.author import DEFAULT_ERA, Era
 from ._base import Pallet
 
 
@@ -11,6 +12,7 @@ class Sudo(Pallet):
         call_function: str,
         call_args: dict,
         wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
         """
         Calls a function with sudo permissions.
@@ -48,4 +50,5 @@ class Sudo(Pallet):
                 "call": call,
             },
             key=wallet.coldkey,
+            era=era,
         )

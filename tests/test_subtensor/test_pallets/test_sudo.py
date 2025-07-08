@@ -10,6 +10,7 @@ async def test_sudo(subtensor, alice_wallet):
             "netuid": 1,
             "tempo": 360,
         },
+        era=None,
         wallet=alice_wallet,
     )
 
@@ -28,5 +29,6 @@ async def test_sudo(subtensor, alice_wallet):
                 },
             },
         },
+        era=None,
         key=alice_wallet.coldkey,
     )
