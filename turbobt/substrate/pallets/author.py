@@ -108,12 +108,13 @@ class Author(Pallet):
             runtime_version=runtime_version,
         )
 
-        subscription_id = await self.substrate.rpc(
+        subscription_id_raw = await self.substrate.rpc(
             method="author_submitAndWatchExtrinsic",
             params={
                 "bytes": str(extrinsic.data),
             },
         )
+        subscription_id = f"0x{subscription_id_raw.hex()}"
         subscription = await self.substrate.subscribe(subscription_id)
 
         return ExtrinsicResult(

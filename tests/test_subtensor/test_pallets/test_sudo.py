@@ -14,7 +14,7 @@ async def test_sudo(subtensor, alice_wallet):
         wallet=alice_wallet,
     )
 
-    assert extrinsic.subscription.id == "S6KpbWmhS2jSAsc8"
+    assert extrinsic.subscription.id == "0x53364b7062576d6853326a5341736338"
 
     subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
         call_module="Sudo",
