@@ -33,6 +33,14 @@ dynamic = [
 Homepage = "https://github.com/bactensor/turbobt"
 Issues = "https://github.com/bactensor/turbobt/issues"
 
+[dependency-groups]
+dev = [
+    "pytest-asyncio",
+    "pytest-xdist",
+    "pytest",
+    "ruff",
+]
+
 [tool.hatch.build.targets.sdist]
 include = [
     "/README.md",
