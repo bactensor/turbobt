@@ -26,7 +26,6 @@ from .substrate._scalecodec import (
 )
 
 if typing.TYPE_CHECKING:
-    from .block import Block
     from .client import Bittensor
 
 

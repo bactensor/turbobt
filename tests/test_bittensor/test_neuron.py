@@ -1,4 +1,5 @@
 import ipaddress
+
 import pytest
 
 from turbobt.neuron import AxonInfo, Neuron, PrometheusInfo
@@ -54,7 +55,7 @@ async def test_get(mocked_subtensor, bittensor):
     assert neuron == Neuron(
         active=True,
         axon_info=AxonInfo(
-            ip=ipaddress.IPv4Address("0.0.0.0"),
+            ip=ipaddress.IPv4Address("0.0.0.0"),  # noqa: S104
             port=0,
             protocol=0,
         ),
@@ -66,7 +67,7 @@ async def test_get(mocked_subtensor, bittensor):
         incentive=0,
         last_update=0,
         prometheus_info=PrometheusInfo(
-            ip=ipaddress.IPv4Address("0.0.0.0"),
+            ip=ipaddress.IPv4Address("0.0.0.0"),  # noqa: S104
             port=0,
         ),
         pruning_score=65535,

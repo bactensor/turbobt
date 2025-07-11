@@ -3,8 +3,8 @@ import typing
 import scalecodec
 
 from .._hashers import (
-    xxh128,
     HASHERS,
+    xxh128,
 )
 from ._base import Pallet
 

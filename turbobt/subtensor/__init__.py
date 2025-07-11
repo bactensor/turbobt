@@ -1,6 +1,6 @@
 from .client import (
-    Subtensor,
     CacheSubtensor,
+    Subtensor,
 )
 
 __all__ = [
