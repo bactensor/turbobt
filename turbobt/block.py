@@ -100,7 +100,7 @@ class Block:
 
         return datetime.datetime.fromtimestamp(
             timestamp / 1000,
-            tz=datetime.timezone.utc,
+            tz=datetime.UTC,
         )
 
 

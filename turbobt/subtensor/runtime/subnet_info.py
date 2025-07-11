@@ -1,4 +1,5 @@
 import typing
+
 import scalecodec.utils.ss58
 
 from ._base import RuntimeApi

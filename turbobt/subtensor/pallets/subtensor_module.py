@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import typing
 import ipaddress
+import typing
 
 import bittensor_wallet
 

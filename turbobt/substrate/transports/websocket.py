@@ -2,8 +2,8 @@ import asyncio
 import contextlib
 import json
 import traceback
-import typing
 import types
+import typing
 
 import websockets.asyncio.client
 

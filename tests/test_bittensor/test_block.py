@@ -125,7 +125,7 @@ async def test_block_get_timestamp(mocked_subtensor, bittensor):
     assert block_timestamp == datetime.datetime(
         2025, 7, 2,
         13, 45, 36,
-        tzinfo=datetime.timezone.utc,
+        tzinfo=datetime.UTC,
     )
 
     mocked_subtensor.timestamp.Now.get.assert_awaited_once_with(
