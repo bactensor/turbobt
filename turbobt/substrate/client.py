@@ -95,6 +95,10 @@ class Substrate:
 
         if uri == "finney":
             uri = "wss://entrypoint-finney.opentensor.ai"
+        elif uri == "archive":
+            uri = "wss://archive.chain.opentensor.ai:443"
+        elif uri == "test":
+            uri = "wss://test.finney.opentensor.ai:443"
         elif uri == "local":
             uri = "ws://127.0.0.1:9944"
 
