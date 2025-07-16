@@ -129,6 +129,31 @@ async def test_serve_axon_tls(subtensor, alice_wallet):
 
 
 @pytest.mark.asyncio
+async def test_set_weights(subtensor, alice_wallet):
+    await subtensor.subtensor_module.set_weights(
+        netuid=1,
+        dests=[0, 1],
+        weights=[0, 65535],
+        version_key=1000,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "set_weights",
+        {
+            "netuid": 1,
+            "dests": [0, 1],
+            "weights": [0, 65535],
+            "version_key": 1000,
+        },
+        era=None,
+        key=alice_wallet.hotkey,
+    )
+
+
+@pytest.mark.asyncio
 async def test_evm_addresses_fetch(subtensor, mocked_transport):
     mocked_transport.responses["state_getKeysPaged"] = {
         "result": [

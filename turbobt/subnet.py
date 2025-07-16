@@ -222,6 +222,29 @@ class SubnetWeights:
         self.subnet = subnet
         self.client = subnet.client
 
+    async def set(
+        self,
+        weights: dict[int, float],
+        version_key: int = BITTENSOR_VERSION_INT,
+        wallet: bittensor_wallet.Wallet | None = None,
+    ) -> None:
+        weights = self._normalize(weights)
+
+        try:
+            uids, weights = zip(*weights.items())
+        except ValueError:
+            uids, weights = [], []
+
+        extrinsic = await self.client.subtensor.subtensor_module.set_weights(
+            self.subnet.netuid,
+            list(uids),
+            list(weights),
+            version_key=version_key,
+            wallet=wallet or self.subnet.client.wallet,
+        )
+
+        await extrinsic.wait_for_finalization()
+
     async def commit(
         self,
         weights: dict[int, float],

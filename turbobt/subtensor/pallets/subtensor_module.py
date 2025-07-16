@@ -242,3 +242,25 @@ class SubtensorModule(Pallet):
             key=wallet.hotkey,
             era=era,
         )
+
+    async def set_weights(
+        self,
+        netuid: int,
+        dests: list[int],
+        weights: list[int],
+        version_key: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "set_weights",
+            {
+                "netuid": netuid,
+                "dests": dests,
+                "weights": weights,
+                "version_key": version_key,
+            },
+            key=wallet.hotkey,
+            era=era,
+        )
