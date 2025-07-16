@@ -230,7 +230,11 @@ class SubnetWeights:
         block_time: int = 12,
     ) -> int:
         weights = self._normalize(weights)
-        uids, weights = zip(*weights.items())
+
+        try:
+            uids, weights = zip(*weights.items())
+        except ValueError:
+            uids, weights = [], []
 
         async with self.client.blocks[-1] as block:
             hyperparameters = await self.subnet.get_hyperparameters()
@@ -315,7 +319,16 @@ class SubnetWeights:
         }
 
     def _normalize(self, weights: dict[int, float]) -> dict[int, int]:
-        max_weight = max(weights.values())
+        try:
+            max_weight = max(weights.values())
+        except ValueError:
+            return {}
+
+        if not max_weight:
+            return {
+                uid: 0
+                for uid in weights
+            }
 
         return {
             uid: float_to_u16_proportion(weight / max_weight)
