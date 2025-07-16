@@ -82,3 +82,15 @@ async def test_get(mocked_subtensor, bittensor):
         validator_permit=True,
         validator_trust=0,
     )
+
+
+@pytest.mark.asyncio
+async def test_get_by_hotkey_not_exist(mocked_subtensor, bittensor):
+    mocked_subtensor.subtensor_module.Uids.get.return_value = None
+
+    subnet = bittensor.subnet(1)
+    neuron = await subnet.get_neuron("5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM")
+
+    assert neuron is None
+
+    mocked_subtensor.neuron_info.get_neuron.assert_not_awaited()

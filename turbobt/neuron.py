@@ -139,6 +139,9 @@ class NeuronReference:
                 self.hotkey,
                 block_hash=block_hash,
             )
+
+            if uid is None:
+                return None
         else:
             raise ValueError
 
