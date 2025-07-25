@@ -145,22 +145,12 @@ class State(Pallet):
 
         await self.substrate._init_runtime()
 
-        pallet, storage_function = key.split(".", 1)
-        pallet = self.substrate._metadata.get_metadata_pallet(pallet)
-        storage_function = pallet.get_storage_function(storage_function)
-
-        key = self._storage_key(
-            pallet,
-            storage_function,
-            params,
-        )
-
         return await self.substrate.rpc(
             method="state_getKeysPaged",
             params={
-                "key": key,
+                "prefix": prefix,
                 "count": count,
-                "startKey": start_key or key,   # TODO or None?
+                "startKey": start_key,
                 "hash": block_hash,
             },
         )
