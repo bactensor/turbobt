@@ -58,7 +58,7 @@ class SubnetCommitments:
         )
 
     async def fetch(self, block_hash: str | None = None) -> dict[str, bytes]:
-        commitments = await self.client.subtensor.commitments.CommitmentOf.query(
+        commitments = await self.client.subtensor.commitments.CommitmentOf.fetch(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -297,7 +297,7 @@ class SubnetWeights:
         return {uid: u16_proportion_to_float(weight) for uid, weight in weights}
 
     async def fetch(self, block_hash: str | None = None) -> dict[Uid, dict[Uid, float]]:
-        weights = await self.client.subtensor.subtensor_module.Weights.query(
+        weights = await self.client.subtensor.subtensor_module.Weights.fetch(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -322,7 +322,7 @@ class SubnetWeights:
             tuple[bytes, int],
         ],
     ]:
-        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommits.query(
+        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommits.fetch(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )

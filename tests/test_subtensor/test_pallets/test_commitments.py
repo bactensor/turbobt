@@ -29,7 +29,7 @@ async def test_get_commitment(subtensor, alice_wallet, mocked_transport):
 
 @pytest.mark.asyncio
 async def test_get_commitments(subtensor, alice_wallet, mocked_transport):
-    mocked_transport.responses["state_getKeysPaged"] = {
+    mocked_transport.responses["state_getKeys"] = {
         "result": [
             "0xca407206ec1ab726b2636c4b145ac287419a60ae8b01e6dcaebd7317e43c69bf0200518366b5b1bc7c99d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d",
             "0xca407206ec1ab726b2636c4b145ac2874e7b9012096b41c4eb3aaf947f6ea429",
@@ -58,7 +58,7 @@ async def test_get_commitments(subtensor, alice_wallet, mocked_transport):
 
     netuid = 2
 
-    commitments = await subtensor.commitments.CommitmentOf.query(
+    commitments = await subtensor.commitments.CommitmentOf.fetch(
         netuid,
     )
 

@@ -95,10 +95,35 @@ class State(Pallet):
             },
         )
 
+    async def getKeys(
+        self,
+        prefix: str,
+        block_hash=None,
+    ) -> list:
+        """
+        Returns the keys with prefix from a child storage.
+
+        :param prefix: The Storage Key prefix.
+        :type prefix: str
+        :param block_hash: The hash of a specific block in the chain. Providing this parameter ensures that the keys are queried at the state corresponding to that block. If not provided, the request will use the latest block.
+        :type block_hash:
+        :return: A list of keys.
+        :rtype: list
+        """
+
+        await self.substrate._init_runtime()
+
+        return await self.substrate.rpc(
+            method="state_getKeys",
+            params={
+                "prefix": prefix,
+                "hash": block_hash,
+            },
+        )
+
     async def getKeysPaged(
         self,
-        key: str,
-        *params,
+        prefix: str,
         count: int,
         start_key: str | None = "",
         block_hash=None,
@@ -106,10 +131,8 @@ class State(Pallet):
         """
         Returns the keys with prefix from a child storage with pagination support.
 
-        :param key: The storage name.
+        :param prefix: The Storage Key prefix.
         :type key: str
-        :param params: Parts of Storage Key for which you want to retrieve the storage data.
-        :type params:
         :param count: The number of results to include per page.
         :type count: int
         :param start_key: This parameter is used for pagination, indicating the starting key to fetch results from. If not provided, the request will start from the beginning.

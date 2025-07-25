@@ -30,11 +30,9 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             block_hash=block_hash,
         )
 
-    async def query(
+    async def fetch(
         self,
         *args,
-        count: int = 100,
-        start_key: str = "",
         block_hash: str = None,
     ) -> list[tuple[tuple[K1, K2], V]]:
         await self.subtensor._init_runtime()
@@ -48,19 +46,10 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             args,
         )
 
-        keys = await self.subtensor.state.getKeysPaged(
-            f"{self.module}.{self.storage}",
-            *args,
+        keys = await self.subtensor.state.getKeys(
+            prefix,
             block_hash=block_hash,
-            count=count,
-            start_key=start_key,
         )
-        keys = [
-            key
-            for key in keys
-            if key.startswith(prefix)
-        ]
-
         results = await self.subtensor.state.queryStorageAt(
             keys,
             block_hash=block_hash,

@@ -155,7 +155,7 @@ async def test_set_weights(subtensor, alice_wallet):
 
 @pytest.mark.asyncio
 async def test_evm_addresses_fetch(subtensor, mocked_transport):
-    mocked_transport.responses["state_getKeysPaged"] = {
+    mocked_transport.responses["state_getKeys"] = {
         "result": [
             "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00a71a89063ba6541ca300",
             "0x658faa385070e074c85bf6b568cf05552ee3ea5cc28fb0bcd7e9c900544e35b24b9bd30d03d0266b0c00ce2b3c8f6925c6c8c500",
@@ -184,7 +184,7 @@ async def test_evm_addresses_fetch(subtensor, mocked_transport):
         ],
     }
 
-    evm_addresses = await subtensor.subtensor_module.AssociatedEvmAddress.query(12)
+    evm_addresses = await subtensor.subtensor_module.AssociatedEvmAddress.fetch(12)
 
     assert evm_addresses == [
         ((12, 163), ("0x77407f1709d339f5583feac922c0592e248f785f", 5668432)),
