@@ -53,8 +53,7 @@ class ExtrinsicResult:
 
             block, events = await asyncio.gather(
                 self.substrate.chain.getBlock(status["finalized"]),
-                self.substrate.state.getStorage(
-                    "System.Events",
+                self.substrate.system.Events.get(
                     block_hash=status["finalized"],
                 ),
             )
