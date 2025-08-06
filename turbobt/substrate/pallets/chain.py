@@ -101,3 +101,27 @@ class Chain(Pallet):
         block["number"] = int(block["number"], 16)
 
         return block
+
+    async def subscribeFinalizedHeads(self):
+        """
+        Subscribes to finalized block headers.
+        """
+
+        subscription_id_raw = await self.substrate.rpc(
+            method="chain_subscribeFinalizedHeads",
+            params={},
+        )
+        subscription_id = f"0x{subscription_id_raw.hex()}"
+        subscription = await self.substrate.subscribe(subscription_id)
+
+        return subscription
+
+    async def unsubscribeFinalizedHeads(self):
+        """
+        Unsubscribes from finalized block headers.
+        """
+
+        return await self.substrate.rpc(
+            method="chain_unsubscribeFinalizedHeads",
+            params={},
+        )
