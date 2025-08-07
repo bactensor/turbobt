@@ -5,6 +5,7 @@ import typing
 import scalecodec
 
 from ...substrate._hashers import HASHERS
+from ...substrate.pallets.state import StorageChangeSet
 from ..types import HotKey
 
 if typing.TYPE_CHECKING:
@@ -54,6 +55,15 @@ class StorageDoubleMap(typing.Generic[K1, K2, V]):
             keys,
             block_hash=block_hash,
         )
+
+        return self._decode(results)
+
+    def _decode(
+        self,
+        results: list[StorageChangeSet],
+    ) -> list[tuple[tuple[K1, K2], V]]:
+        pallet = self.subtensor._metadata.get_metadata_pallet(self.module)
+        storage_function = pallet.get_storage_function(self.storage)
 
         param_types = storage_function.get_params_type_string()
         param_hashers = storage_function.get_param_hashers()
