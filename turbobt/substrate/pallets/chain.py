@@ -102,7 +102,7 @@ class Chain(Pallet):
 
         return block
 
-    async def subscribeFinalizedHeads(self):
+    async def subscribeFinalizedHeads(self) -> str:
         """
         Subscribes to finalized block headers.
         """
@@ -112,16 +112,17 @@ class Chain(Pallet):
             params={},
         )
         subscription_id = f"0x{subscription_id_raw.hex()}"
-        subscription = await self.substrate.subscribe(subscription_id)
 
-        return subscription
+        return subscription_id
 
-    async def unsubscribeFinalizedHeads(self):
+    async def unsubscribeFinalizedHeads(self, subscription_id: str) -> bool:
         """
         Unsubscribes from finalized block headers.
         """
 
         return await self.substrate.rpc(
             method="chain_unsubscribeFinalizedHeads",
-            params={},
+            params=[
+                subscription_id,
+            ],
         )
