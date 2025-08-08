@@ -142,6 +142,9 @@ class WebSocketTransport(BaseTransport):
         except asyncio.CancelledError:  # TODO WS Closed
             pass
             # await connection.close()
+        except websockets.exceptions.ConnectionClosed as exc:
+            for subscription in self._subscriptions.values():
+                subscription.put_nowait(exc)
 
     async def send(self, request: Request) -> Response:
         """

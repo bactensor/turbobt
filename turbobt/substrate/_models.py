@@ -50,4 +50,8 @@ class Subscription:
             raise StopIteration
 
         self.queue.task_done()
+
+        if isinstance(item, Exception):
+            raise item
+
         return item
