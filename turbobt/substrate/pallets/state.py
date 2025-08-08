@@ -231,6 +231,43 @@ class State(Pallet):
             },
         )
 
+    async def subscribeStorage(
+        self,
+        key: str,
+        *params,
+    ) -> str:
+        await self.substrate._init_runtime()
+
+        pallet, storage_function = key.split(".", 1)
+        pallet = self.substrate._metadata.get_metadata_pallet(pallet)
+        storage_function = pallet.get_storage_function(storage_function)
+
+        key = self._storage_key(
+            pallet,
+            storage_function,
+            params,
+        )
+
+        subscription_id_raw = await self.substrate.rpc(
+            method="state_subscribeStorage",
+            params={
+                "keys": [key],
+            },
+        )
+        subscription_id = f"0x{subscription_id_raw.hex()}"
+
+        return subscription_id
+
+    async def unsubscribeStorage(self, subscription_id: str) -> bool:
+        await self.substrate._init_runtime()
+
+        return await self.substrate.rpc(
+            method="state_unsubscribeStorage",
+            params=[
+                subscription_id,
+            ],
+        )
+
     def _storage_key(self, pallet, storage_function, params):
         param_types = storage_function.get_params_type_string()
         param_hashers = storage_function.get_param_hashers()
