@@ -20,6 +20,10 @@ class StorageSubscription:
         self._subscription = subscription
         self._decode = decode
 
+    @property
+    def id(self):
+        return self._subscription.id
+
     def __aiter__(self):
         return self
 
