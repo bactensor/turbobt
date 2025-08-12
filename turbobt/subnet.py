@@ -494,6 +494,8 @@ class Subnets:
 
     # TODO create?
     async def register(self, wallet=None, **kwargs):
+        wallet = wallet or self.client.wallet
+
         # register_network_with_identity
         extrinsic = await self.client.subtensor.subtensor_module.register_network(
             hotkey=wallet.hotkey.ss58_address,
