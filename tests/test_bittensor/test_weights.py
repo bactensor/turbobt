@@ -17,6 +17,7 @@ async def mocked_encrypted_commit(monkeypatch):
         netuid,
         subnet_reveal_period_epochs,
         block_time,
+        hotkey,
     ):
         return (
             json.dumps(
@@ -29,7 +30,7 @@ async def mocked_encrypted_commit(monkeypatch):
         )
 
     monkeypatch.setattr(
-        "bittensor_commit_reveal.get_encrypted_commit",
+        "bittensor_drand.get_encrypted_commit",
         get_encrypted_commit,
     )
 
@@ -49,10 +50,11 @@ async def test_commit(
         }
     )
 
-    mocked_subtensor.subtensor_module.commit_crv3_weights.assert_awaited_once_with(
+    mocked_subtensor.subtensor_module.commit_timelocked_weights.assert_awaited_once_with(
         1,
         json.dumps({"uids": [0, 1], "weights": [16384, 65535]}).encode(),
         123,
+        commit_reveal_version=4,
         wallet=alice_wallet,
     )
 
@@ -65,10 +67,11 @@ async def test_commit_empty(
 
     await subnet.weights.commit({})
 
-    mocked_subtensor.subtensor_module.commit_crv3_weights.assert_awaited_once_with(
+    mocked_subtensor.subtensor_module.commit_timelocked_weights.assert_awaited_once_with(
         1,
         json.dumps({"uids": [], "weights": []}).encode(),
         123,
+        commit_reveal_version=4,
         wallet=alice_wallet,
     )
 
@@ -86,10 +89,11 @@ async def test_commit_zeros(
         }
     )
 
-    mocked_subtensor.subtensor_module.commit_crv3_weights.assert_awaited_once_with(
+    mocked_subtensor.subtensor_module.commit_timelocked_weights.assert_awaited_once_with(
         1,
         json.dumps({"uids": [0, 1], "weights": [0, 0]}).encode(),
         123,
+        commit_reveal_version=4,
         wallet=alice_wallet,
     )
 

@@ -115,6 +115,28 @@ class SubtensorModule(Pallet):
             era=era,
         )
 
+    async def commit_timelocked_weights(
+        self,
+        netuid: int,
+        commit: bytes,
+        reveal_round: int,
+        commit_reveal_version: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "commit_timelocked_weights",
+            {
+                "netuid": netuid,
+                "commit": f"0x{commit.hex()}",
+                "reveal_round": reveal_round,
+                "commit_reveal_version": commit_reveal_version,
+            },
+            key=wallet.hotkey,
+            era=era,
+        )
+
     async def register_network(
         self,
         hotkey: bittensor_wallet.Keypair,

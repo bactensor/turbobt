@@ -4,7 +4,7 @@ import asyncio
 import dataclasses
 import typing
 
-import bittensor_commit_reveal
+import bittensor_drand
 import bittensor_wallet
 import scalecodec.utils.ss58
 
@@ -262,7 +262,7 @@ class SubnetWeights:
         async with self.client.blocks[-1] as block:
             hyperparameters = await self.subnet.get_hyperparameters()
 
-            commit, reveal_round = bittensor_commit_reveal.get_encrypted_commit(
+            commit, reveal_round = bittensor_drand.get_encrypted_commit(
                 uids,
                 weights,
                 version_key=version_key,
@@ -271,13 +271,17 @@ class SubnetWeights:
                 netuid=self.subnet.netuid,
                 subnet_reveal_period_epochs=hyperparameters["commit_reveal_period"],
                 block_time=block_time,
+                hotkey=self.subnet.client.wallet.hotkey.public_key,
             )
 
-        extrinsic = await self.client.subtensor.subtensor_module.commit_crv3_weights(
-            self.subnet.netuid,
-            commit,
-            reveal_round,
-            wallet=wallet or self.subnet.client.wallet,
+        extrinsic = (
+            await self.client.subtensor.subtensor_module.commit_timelocked_weights(
+                self.subnet.netuid,
+                commit,
+                reveal_round,
+                commit_reveal_version=4,
+                wallet=wallet or self.subnet.client.wallet,
+            )
         )
 
         await extrinsic.wait_for_finalization()
