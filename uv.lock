@@ -26,23 +26,26 @@ wheels = [
 ]
 
 [[package]]
-name = "bittensor-commit-reveal"
-version = "0.3.1"
+name = "bittensor-drand"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f0/7a/6768271173e98514730113334a47ab583cbabf0d484057c85a8ae9ed2f35/bittensor_commit_reveal-0.3.1.tar.gz", hash = "sha256:09a40adaffabb7c33d3fdf012c2fb1cba922f7f93012b62a8c0caf3864d2338b", size = 23337, upload-time = "2025-04-01T00:03:25.519Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/59/2e/7994f0d84945837fd9cd027ad93aba00e1936021d79a862133f0e1c25555/bittensor_drand-1.0.0.tar.gz", hash = "sha256:d309a19981d69e2bfc0ac27770c63531173fc4bb2a41483c9c60b6677c44a501", size = 44924, upload-time = "2025-08-11T17:06:55.042Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/39/ef88349672408807341253c240215313228d4c16ec41af5a9522bda4e263/bittensor_commit_reveal-0.3.1-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:6d6a02ac10e39f7e00217af3ede0bf78eb649e8351a3d1074c8dacde66160906", size = 508367, upload-time = "2025-04-01T00:03:18.51Z" },
-    { url = "https://files.pythonhosted.org/packages/c4/07/713d9f93304e2046853d7dfc77b0991ed4d254b4c68fa1425f3036905693/bittensor_commit_reveal-0.3.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:f3bb5c946c4e6cbbc33275d7bfa9e885fad0b3372b5ce71fa569c416d6e07a67", size = 508918, upload-time = "2025-04-01T00:03:09.756Z" },
-    { url = "https://files.pythonhosted.org/packages/a9/e8/f2568322cfdbc7ace6c81009e39477eb693f8c56339d9c545643f3e3bf35/bittensor_commit_reveal-0.3.1-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8e4ad18f88a051d8cd48c9d4ab2143f074e4897c99ed948a668d3219105940dd", size = 737517, upload-time = "2025-04-01T00:02:51.215Z" },
-    { url = "https://files.pythonhosted.org/packages/8a/eb/8174247e73c879216ad49453d5b20d0c40a86f475e020af81ce86fb9cd2f/bittensor_commit_reveal-0.3.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e518c3501227a9a940744ac31196af912c4db44bc22e3daae1afedf62b6fe594", size = 568303, upload-time = "2025-04-01T00:03:00.368Z" },
-    { url = "https://files.pythonhosted.org/packages/b1/c1/76228e7c5295aedab999810ed50751692745817ee94fbe7c9a66795b594f/bittensor_commit_reveal-0.3.1-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:0a4af8911334e1f162667d96a232addc42990041c7e8d01824e144438e887386", size = 508977, upload-time = "2025-04-01T00:03:20.332Z" },
-    { url = "https://files.pythonhosted.org/packages/1c/1c/be394b0d30492ec9027c6040b5360e77d95e44c1dd4d3eef7fc4578a946d/bittensor_commit_reveal-0.3.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:9f5c3f05197afbb7b3ea788b082f610c189dd12d5132bc4ae8e00471a7f11de5", size = 508393, upload-time = "2025-04-01T00:03:11.203Z" },
-    { url = "https://files.pythonhosted.org/packages/f3/0f/0d2e2005c81b5e7b416ed01505b475c7d49a4b1231fcd9370a39399449ed/bittensor_commit_reveal-0.3.1-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:bafd01fbacce4938aa353aeb72ff0f666ce3599d7d2eb910da0675eb007ec05d", size = 737798, upload-time = "2025-04-01T00:02:52.998Z" },
-    { url = "https://files.pythonhosted.org/packages/b6/f3/0b89d6350b4296a91bbdb4c02da7175a176f650a92807dd7e5e8cd2be400/bittensor_commit_reveal-0.3.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0c24a2bcc1ce5072e38b5492c605802341ab5ad925b6b6dcc3973fc78d23aa1d", size = 569543, upload-time = "2025-04-01T00:03:02.834Z" },
-    { url = "https://files.pythonhosted.org/packages/57/b4/98e464dc0dada544ce43f6cac45336f900009e4ad71a876c00475ac782af/bittensor_commit_reveal-0.3.1-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:1ea372e8f79bbda8fe9a4802128dcae5695e1c4d10ae5c0edfb3929a598f5610", size = 508918, upload-time = "2025-04-01T00:03:22.023Z" },
-    { url = "https://files.pythonhosted.org/packages/cb/4b/62a34ff734506dd3a10d80459c7973b6b6f4786e9b33e15226267a5c2ef1/bittensor_commit_reveal-0.3.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:e7b71bc7f85915797cc751baf28062a4ea4d7cfe81520d5fd5f58a5444c0e9a6", size = 508522, upload-time = "2025-04-01T00:03:12.792Z" },
-    { url = "https://files.pythonhosted.org/packages/60/0f/16f7d2095c8ffcde40fd3d8b7bf32c3785be7954ea0705a582cf91d7c3ab/bittensor_commit_reveal-0.3.1-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7320386f1dc563510450e35bf9c93e54457933ce8395ad8cdb1f34f165a76c6c", size = 737691, upload-time = "2025-04-01T00:02:54.784Z" },
-    { url = "https://files.pythonhosted.org/packages/63/ca/c4edab29594d29dce314e0e2f88730e86cc37b662bec4914a6b4a51bdf5f/bittensor_commit_reveal-0.3.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:82a38e332136fe77ab7d13e7cfd48dc3422dfa5459a5bb13d861830080eda52d", size = 569647, upload-time = "2025-04-01T00:03:04.673Z" },
+    { url = "https://files.pythonhosted.org/packages/83/1d/019f9bc0dc62518fe5ec884a956206ae5d0d0dddb32b13e9b0adba285a91/bittensor_drand-1.0.0-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:6c4eb6707fa3ed541a7cb7eec749c3ed16d2ea2e5f0617abb5f9f669ab84e291", size = 1931464, upload-time = "2025-08-11T17:06:49.547Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/cf/4b8edb83d7a802b94f33cfb823ade5517316cf409be6bc922161cf25b0be/bittensor_drand-1.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:afb29ba126313f16e9637cd6ce3c45dff1484536d3d0a73a9ebada4fd2568ffa", size = 1834894, upload-time = "2025-08-11T17:06:43.702Z" },
+    { url = "https://files.pythonhosted.org/packages/83/18/8256905df075e64a28c84f63a62c39e3e26c2943ad45946093a333648a57/bittensor_drand-1.0.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bd27a7e906c9fd58e4d158e7eb7c56c7026255516510223f4e964142b8f8010b", size = 2066528, upload-time = "2025-08-11T17:06:19.428Z" },
+    { url = "https://files.pythonhosted.org/packages/88/d4/b088bc7bfba0841e8df53b22ef67c05eee89f7c7c35a89ca0139be4b2cf9/bittensor_drand-1.0.0-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4af4d55d1ac9e8c050ea4884afa6350f631b92673afa0b8fe65711f126d853bc", size = 2172674, upload-time = "2025-08-11T17:06:25.729Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/c5/f30ac01e2b1f2ea70ad90a567a91449f33c6bd4fcfd4b9423527b384363c/bittensor_drand-1.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ac06a66b9435229befb54f7f7a6d22a16e179e8cbc26c3fab816d371bc17f41e", size = 2104748, upload-time = "2025-08-11T17:06:35.852Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/60/7f67116ff0479e4800853aa0ac4a2114442be65f98c6531e131ce23df090/bittensor_drand-1.0.0-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:2f3a7f878689f4c996db33ba3a8a336dd4c4f797fb4cd69176f75da13e770794", size = 1930096, upload-time = "2025-08-11T17:06:50.716Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/db/58ac7d01e26a787247e5dbde26903f6ae3755304bf1429c2d4a8b6ed0bb2/bittensor_drand-1.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:eddf11a9e352e06558435f5938b3f859ff38a41ef947547d461d07221e2c0ba7", size = 1834271, upload-time = "2025-08-11T17:06:44.808Z" },
+    { url = "https://files.pythonhosted.org/packages/45/5a/5050328a65c8ea0af44eb508a3a9d1e31587ed6814a62b18de979a7e384b/bittensor_drand-1.0.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d3c1a78034ea4a9eb3c5b607ed4746c85051107fc742c782d3291574a249a83d", size = 2065877, upload-time = "2025-08-11T17:06:20.546Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/0a/b3284b9acdd377b065233296b8fcd8703bfcef2a5f64b52dc67b7b869e9e/bittensor_drand-1.0.0-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:56436a880567f83c12f7fbd4ea4806b73487fa3c723c376694f966ab1311bfc9", size = 2169956, upload-time = "2025-08-11T17:06:27.295Z" },
+    { url = "https://files.pythonhosted.org/packages/97/1c/ee1602728fffeafcc6b22a5f6d3da7c51d11777a6a28773ba4dcc485f1b8/bittensor_drand-1.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2d9f4960acabcb494de74790bf94c8b0d36efed4f21f5388690a25ecb48b1b8a", size = 2106980, upload-time = "2025-08-11T17:06:37.767Z" },
+    { url = "https://files.pythonhosted.org/packages/83/5b/c399e2510bc26a4b8611ca4d65efd91a45c041655772ebe1d474c339d835/bittensor_drand-1.0.0-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:67ddbb91192f5321d18e9e9df622d110b74fcf35fa5d4faf3adcd19472a3c6d1", size = 1929385, upload-time = "2025-08-11T17:06:52.716Z" },
+    { url = "https://files.pythonhosted.org/packages/22/8b/9e679bb9870a9cf6ef6280defb4c251e2a6915e2f4bc49845c4fcfefe41b/bittensor_drand-1.0.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:bd4349e7e60f7fa016db7681e66edaced1fad53dfce988ee9451f2a1bbf206da", size = 1834022, upload-time = "2025-08-11T17:06:46.227Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/b2/60f7adcaa5d1fabde0c7db5de8523b633280d8946ed1dde7b15b0f382a05/bittensor_drand-1.0.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3666af0efdceaccb4964bbdf6b6223bfed8e8e12ced4d8038f7b653ce62e88e7", size = 2065494, upload-time = "2025-08-11T17:06:21.717Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/e0/a46a89d69f87d6f431f437ba63ef0c61d6e7fbb4a983cbb9cf5f66200660/bittensor_drand-1.0.0-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:63842f256c187e808271a491e59419a68574580e555bd230c75fa4259957774c", size = 2168963, upload-time = "2025-08-11T17:06:28.7Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/3d/0eb52250acc953f97c0bef4f6d28a1cebd463ee0fd5a603fbff8cf6eeac8/bittensor_drand-1.0.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c4513b5543c1c16691d64f37ae2dc43f51b4d11f9d15da56884d5db9ffcc9a17", size = 2106029, upload-time = "2025-08-11T17:06:39.086Z" },
 ]
 
 [[package]]
@@ -343,7 +346,7 @@ wheels = [
 name = "turbobt"
 source = { editable = "." }
 dependencies = [
-    { name = "bittensor-commit-reveal" },
+    { name = "bittensor-drand" },
     { name = "bittensor-wallet" },
     { name = "httpx" },
     { name = "scalecodec" },
@@ -361,7 +364,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bittensor-commit-reveal", specifier = "~=0.3.1" },
+    { name = "bittensor-drand", specifier = "~=1.0.0" },
     { name = "bittensor-wallet", specifier = "~=3.0.4" },
     { name = "httpx", specifier = "~=0.26.0" },
     { name = "scalecodec", specifier = "~=1.2.11" },

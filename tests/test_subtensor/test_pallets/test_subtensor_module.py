@@ -46,6 +46,31 @@ async def test_commit_crv3_weights(subtensor, alice_wallet):
 
 
 @pytest.mark.asyncio
+async def test_commit_timelocked_weights(subtensor, alice_wallet):
+    await subtensor.subtensor_module.commit_timelocked_weights(
+        netuid=1,
+        commit=b"TEST",
+        reveal_round=204,
+        commit_reveal_version=4,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "commit_timelocked_weights",
+        {
+            "netuid": 1,
+            "commit": "0x54455354",
+            "reveal_round": 204,
+            "commit_reveal_version": 4,
+        },
+        era=None,
+        key=alice_wallet.coldkey,
+    )
+
+
+@pytest.mark.asyncio
 async def test_register_network(subtensor, alice_wallet):
     await subtensor.subtensor_module.register_network(
         hotkey=alice_wallet.hotkey.ss58_address,
