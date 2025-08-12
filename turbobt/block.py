@@ -55,13 +55,20 @@ class BlockReference:
         _block_hash.reset(self._token)
 
     async def get(self):
-        if self.number is None or self.number == -1:
+        block_number = self.number
+        block_hash = self.hash
+
+        if block_hash:
+            block = await self.client.subtensor.chain.getBlock(block_hash)
+            block_number = block["block"]["header"]["number"]
+        elif block_number is None or block_number == -1:
             block = await self.client.subtensor.chain.getHeader()
             block_number = block["number"]
         else:
             block_number = self.number
 
-        block_hash = await self.client.subtensor.chain.getBlockHash(block_number)
+        if not block_hash:
+            block_hash = await self.client.subtensor.chain.getBlockHash(block_number)
 
         return Block(
             block_hash=block_hash,
