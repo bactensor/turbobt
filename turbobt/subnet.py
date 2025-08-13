@@ -213,6 +213,7 @@ class SubnetNeurons:
 
 
 class WeightsCommited(typing.NamedTuple):
+    block: int
     commit: bytes
     reveal_round: int
 
@@ -326,7 +327,7 @@ class SubnetWeights:
             tuple[bytes, int],
         ],
     ]:
-        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommits.fetch(
+        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommitsV2.fetch(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -337,10 +338,11 @@ class SubnetWeights:
         return {
             reveal_round: {
                 scalecodec.utils.ss58.ss58_encode(hotkey): WeightsCommited(
+                    commit_block,
                     bytes.fromhex(commit[2:]),
                     round_number,
                 )
-                for hotkey, commit, round_number in commits
+                for hotkey, commit_block, commit, round_number in commits
             }
             for (netuid, reveal_round), commits in weights
         }

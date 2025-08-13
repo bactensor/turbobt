@@ -43,10 +43,10 @@ class SubtensorModule(Pallet):
             "SubtensorModule",
             "AssociatedEvmAddress",
         )
-        self.CRV3WeightCommits = StorageDoubleMap[NetUid, int, None](
+        self.CRV3WeightCommitsV2 = StorageDoubleMap[NetUid, int, None](
             subtensor,
             "SubtensorModule",
-            "CRV3WeightCommits",
+            "CRV3WeightCommitsV2",
         )
         self.NeuronCertificates = StorageDoubleMap[NetUid, HotKey, NeuronCertificate](
             subtensor,
