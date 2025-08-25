@@ -64,7 +64,8 @@ class WebSocketTransport(BaseTransport):
         try:
             yield connection
         except websockets.exceptions.ConnectionClosed as e:
-            await self.__connections.athrow(e)  # TODO retry?
+            async with self.__lock:
+                await self.__connections.athrow(e)
 
     async def _connections_generator(
         self,
@@ -83,12 +84,7 @@ class WebSocketTransport(BaseTransport):
 
                     while True:
                         yield connection
-            # except websockets.exceptions.ConnectionClosed:
-            #     continue
             except Exception as exc:
-                if retries_left <= 0:
-                    raise
-
                 retries_left -= 1
 
                 try:
@@ -96,8 +92,12 @@ class WebSocketTransport(BaseTransport):
                 except Exception as raised_exc:
                     new_exc = raised_exc
 
-                if new_exc:
-                    raise new_exc from exc
+                if new_exc or retries_left < 0:
+                    connect.logger.exception("connect failed", exc_info=new_exc or exc)
+                    yield
+                    retries_left = self._retries
+                    delays = None
+                    continue
 
                 if delays is None:
                     delays = websockets.asyncio.client.backoff()
