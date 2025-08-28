@@ -162,8 +162,12 @@ class NeuronReference:
         return neuron
 
     async def get_certificate(self, block_hash: str | None = None) -> NeuronCertificate | None:
-        return await self.subnet.client.subtensor.subtensor_module.NeuronCertificates.get(
+        certificate = await self.subnet.client.subtensor.subtensor_module.NeuronCertificates.get(
             self.subnet.netuid,
             self.hotkey,
             block_hash=block_hash,
         )
+        if certificate is not None:
+            certificate["public_key"] = certificate["public_key"].strip("0x")
+
+        return certificate
