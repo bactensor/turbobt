@@ -1,6 +1,7 @@
 import asyncio
 import contextlib
 import json
+import logging
 import traceback
 import types
 import typing
@@ -16,6 +17,7 @@ __all__ = [
     "WebSocketTransport",
 ]
 
+logger = logging.getLogger(__name__)
 
 class WebSocketTransport(BaseTransport):
     def __init__(
@@ -42,6 +44,7 @@ class WebSocketTransport(BaseTransport):
         self._timeout = timeout
         self._futures: dict[int, asyncio.Future] = {}
         self._subscriptions: dict[str, asyncio.Queue] = {}
+        self._connection: websockets.asyncio.client.ClientConnection | None = None
 
         self._id = 0
 
@@ -77,13 +80,18 @@ class WebSocketTransport(BaseTransport):
 
         while True:
             try:
-                async with connect as connection:
-                    task = asyncio.create_task(self._recv(connection))
+                if self._connection:
+                    await self._connection.close()
+            except Exception as e:
+                logger.info(f"Error when closing connection: {e!r}")
+            try:
+                async with connect as self._connection:
+                    task = asyncio.create_task(self._recv(self._connection))
                     delays = None
                     retries_left = self._retries
 
                     while True:
-                        yield connection
+                        yield self._connection
             except Exception as exc:
                 retries_left -= 1
 
@@ -203,6 +211,12 @@ class WebSocketTransport(BaseTransport):
         self._subscriptions.clear()
 
         await self.__connections.aclose()
+
+        try:
+            if self._connection:
+                await self._connection.close()
+        except Exception as e:
+            logger.info(f"Error when closing connection: {e!r}")
 
     def subscribe(self, subscription_id) -> asyncio.Queue:
         subscription = self._subscriptions[subscription_id] = asyncio.Queue()
