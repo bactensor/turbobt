@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "bittensor-drand~=1.0.0",
     "bittensor-wallet~=4.0.0",
+    "eciespy~=0.4.6",
     "httpx~=0.26.0",
     "scalecodec~=1.2.11",
     "websockets~=14.1",
@@ -36,6 +37,7 @@ Issues = "https://github.com/bactensor/turbobt/issues"
 [dependency-groups]
 dev = [
     "pytest-asyncio",
+    "pytest-mock",
     "pytest-xdist",
     "pytest",
     "ruff",
