@@ -64,6 +64,26 @@ class SubtensorModule(Pallet):
             "Weights",
         )
 
+    async def add_stake(
+        self,
+        hotkey: str,
+        netuid: int,
+        amount_staked: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "add_stake",
+            {
+                "netuid": netuid,
+                "hotkey": hotkey,
+                "amount_staked": amount_staked,
+            },
+            key=wallet.coldkey,
+            era=era,
+        )
+
     async def burned_register(
         self,
         netuid: int,
@@ -150,6 +170,26 @@ class SubtensorModule(Pallet):
             {
                 "hotkey": hotkey,
                 "mechid": mechid,
+            },
+            key=wallet.coldkey,
+            era=era,
+        )
+
+    async def remove_stake(
+        self,
+        hotkey: str,
+        netuid: int,
+        amount_unstaked: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "remove_stake",
+            {
+                "amount_unstaked": amount_unstaked,
+                "hotkey": hotkey,
+                "netuid": netuid,
             },
             key=wallet.coldkey,
             era=era,

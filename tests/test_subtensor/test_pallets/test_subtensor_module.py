@@ -216,3 +216,49 @@ async def test_evm_addresses_fetch(subtensor, mocked_transport):
         ((12, 197), ("0xa873b6e2ed71bae54f232fb622b713239f0ec54c", 5471944)),
         ((12, 66), ("0xba6a023c87dd55a0b862925278e77056677e92b7", 5471987)),
     ]
+
+
+@pytest.mark.asyncio
+async def test_add_stake(subtensor, alice_wallet):
+    await subtensor.subtensor_module.add_stake(
+        hotkey=alice_wallet.hotkey.ss58_address,
+        netuid=1,
+        amount_staked=1_000_000_000,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "add_stake",
+        {
+            "netuid": 1,
+            "hotkey": alice_wallet.hotkey.ss58_address,
+            "amount_staked": 1_000_000_000,
+        },
+        era=None,
+        key=alice_wallet.coldkey,
+    )
+
+
+@pytest.mark.asyncio
+async def test_remove_stake(subtensor, alice_wallet):
+    await subtensor.subtensor_module.remove_stake(
+        hotkey=alice_wallet.hotkey.ss58_address,
+        netuid=1,
+        amount_unstaked=1_000_000_000,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "remove_stake",
+        {
+            "netuid": 1,
+            "hotkey": alice_wallet.hotkey.ss58_address,
+            "amount_unstaked": 1_000_000_000,
+        },
+        era=None,
+        key=alice_wallet.coldkey,
+    )
