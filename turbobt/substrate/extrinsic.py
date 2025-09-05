@@ -93,3 +93,23 @@ class ExtrinsicResult:
                 raise SubstrateException.from_error(module_error.value)
 
             raise SubstrateException(dispatch_error)
+
+
+class Extrinsic(ExtrinsicResult):
+    def __init__(
+        self,
+        call: scalecodec.types.GenericCall,
+    ):
+        self.call = call
+
+    async def wait_for_inclusion(self):
+        from turbobt.batch import get_ctx_batch
+
+        batch = get_ctx_batch()
+        batch.add(self.call)
+
+    async def wait_for_finalization(self):
+        from turbobt.batch import get_ctx_batch
+
+        batch = get_ctx_batch()
+        batch.add(self.call)

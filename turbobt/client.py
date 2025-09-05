@@ -1,5 +1,8 @@
+import asyncio
+
 import bittensor_wallet
 
+from .batch import Batch, Transaction
 from .block import BlockReference, Blocks
 from .subnet import (
     SubnetReference,
@@ -38,6 +41,10 @@ class Bittensor:
             client=self,
         )
 
+    async def batch(self, *calls):
+        async with Batch(self):
+            await asyncio.gather(*calls)
+
     def block(self, block_number: int) -> BlockReference:
         return BlockReference(
             block_number,
@@ -52,3 +59,6 @@ class Bittensor:
             netuid,
             client=self,
         )
+
+    def transaction(self) -> Transaction:
+        return Transaction(self)

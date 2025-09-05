@@ -22,6 +22,7 @@ from .pallets import (
     State,
     System,
     Timestamp,
+    Utility,
 )
 from .runtime import (
     Metadata,
@@ -61,6 +62,7 @@ class Substrate:
         self.state = State(self)
         self.system = System(self)
         self.timestamp = Timestamp(self)
+        self.utility = Utility(self)
 
         self.__lock = asyncio.Lock()
 
