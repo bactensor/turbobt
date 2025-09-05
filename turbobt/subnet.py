@@ -497,7 +497,7 @@ class Subnets:
         return SubnetReference(netuid, self.client)
 
     async def count(self):
-        return await self.client.subtensor.get_total_subnets()
+        return await self.client.subtensor.subtensor_module.TotalNetworks.get()
 
     async def get(self, netuid):
         return Subnet(netuid, self._subtensor)

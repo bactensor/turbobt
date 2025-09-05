@@ -6,6 +6,7 @@ import typing
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
+from ...substrate.pallets._types import StorageValue
 from ...substrate.pallets.author import DEFAULT_ERA, Era
 from ..types import (
     HotKey,
@@ -52,6 +53,11 @@ class SubtensorModule(Pallet):
             subtensor,
             "SubtensorModule",
             "NeuronCertificates",
+        )
+        self.TotalNetworks = StorageValue[int](
+            subtensor,
+            "SubtensorModule",
+            "TotalNetworks",
         )
         self.Uids = StorageDoubleMap[NetUid, HotKey, Uid](
             subtensor,
