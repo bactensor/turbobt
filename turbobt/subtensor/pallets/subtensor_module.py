@@ -195,6 +195,33 @@ class SubtensorModule(Pallet):
             era=era,
         )
 
+    async def root_register(
+        self,
+        hotkey: str,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        """
+        Registers a Neuron on the Bittensor's Root Subnet.
+
+        :param hotkey: Hotkey to be registered to the network.
+        :type hotkey: str
+        :param wallet: The wallet associated with the neuron to be registered.
+        :type wallet: bittensor_wallet.Wallet
+        :return: An asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "root_register",
+            {
+                "hotkey": hotkey,
+            },
+            key=wallet.coldkey,
+            era=era,
+        )
+
     async def serve_axon(
         self,
         netuid: int,

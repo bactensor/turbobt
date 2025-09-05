@@ -92,6 +92,25 @@ async def test_register_network(subtensor, alice_wallet):
 
 
 @pytest.mark.asyncio
+async def test_root_register(subtensor, alice_wallet):
+    await subtensor.subtensor_module.root_register(
+        hotkey=alice_wallet.hotkey.ss58_address,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "root_register",
+        {
+            "hotkey": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        },
+        era=None,
+        key=alice_wallet.coldkey,
+    )
+
+
+@pytest.mark.asyncio
 async def test_serve_axon(subtensor, alice_wallet):
     await subtensor.subtensor_module.serve_axon(
         netuid=1,

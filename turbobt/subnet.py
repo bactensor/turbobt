@@ -121,13 +121,17 @@ class SubnetNeurons:
         timeout: float | None = None,
         wallet: bittensor_wallet.Wallet | None = None,
     ) -> None:
-        # TODO netuid = 0
-
-        extrinsic = await self.subnet.client.subtensor.subtensor_module.burned_register(
-            netuid=self.subnet.netuid,
-            hotkey=hotkey.ss58_address,
-            wallet=wallet or self.subnet.client.wallet,
-        )
+        if self.subnet.netuid == 0:
+            extrinsic = await self.subnet.client.subtensor.subtensor_module.root_register(
+                hotkey=hotkey.ss58_address,
+                wallet=wallet or self.subnet.client.wallet,
+            )
+        else:
+            extrinsic = await self.subnet.client.subtensor.subtensor_module.burned_register(
+                netuid=self.subnet.netuid,
+                hotkey=hotkey.ss58_address,
+                wallet=wallet or self.subnet.client.wallet,
+            )
 
         async with asyncio.timeout(timeout):
             await extrinsic.wait_for_finalization()
