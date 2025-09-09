@@ -331,7 +331,7 @@ class SubnetWeights:
             tuple[bytes, int],
         ],
     ]:
-        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommitsV2.fetch(
+        weights = await self.client.subtensor.subtensor_module.TimelockedWeightCommits.fetch(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
