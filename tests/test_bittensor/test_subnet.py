@@ -413,84 +413,6 @@ async def test_register_subnet(mocked_subtensor, bittensor, alice_wallet):
 
 @pytest.mark.asyncio
 async def test_get_certificates(mocked_subtensor, bittensor):
-    # Mock neurons data
-    mocked_subtensor.neuron_info.get_neurons_lite.return_value = [
-        {
-            "hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
-            "coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
-            "uid": 0,
-            "netuid": 1,
-            "active": True,
-            "axon_info": {
-                "block": 0,
-                "version": 0,
-                "ip": 0,
-                "port": 0,
-                "ip_type": 0,
-                "protocol": 0,
-                "placeholder1": 0,
-                "placeholder2": 0,
-            },
-            "prometheus_info": {
-                "block": 0,
-                "version": 0,
-                "ip": 0,
-                "port": 0,
-                "ip_type": 0,
-            },
-            "stake": {
-                "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": 1000000000,
-            },
-            "rank": 0,
-            "emission": 0,
-            "incentive": 0,
-            "consensus": 0,
-            "trust": 0,
-            "validator_trust": 0,
-            "dividends": 0,
-            "last_update": 0,
-            "validator_permit": False,
-            "pruning_score": 0,
-        },
-        {
-            "hotkey": "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH",
-            "coldkey": "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH",
-            "uid": 1,
-            "netuid": 1,
-            "active": True,
-            "axon_info": {
-                "block": 0,
-                "version": 0,
-                "ip": 0,
-                "port": 0,
-                "ip_type": 0,
-                "protocol": 0,
-                "placeholder1": 0,
-                "placeholder2": 0,
-            },
-            "prometheus_info": {
-                "block": 0,
-                "version": 0,
-                "ip": 0,
-                "port": 0,
-                "ip_type": 0,
-            },
-            "stake": {
-                "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH": 500000000,
-            },
-            "rank": 0,
-            "emission": 0,
-            "incentive": 0,
-            "consensus": 0,
-            "trust": 0,
-            "validator_trust": 0,
-            "dividends": 0,
-            "last_update": 0,
-            "validator_permit": False,
-            "pruning_score": 0,
-        },
-    ]
-
     # Mock certificate data for each neuron
     mock_cert1 = NeuronCertificate(
         algorithm=CertificateAlgorithm.ED25519,
@@ -501,23 +423,27 @@ async def test_get_certificates(mocked_subtensor, bittensor):
         public_key="0xfedcba0987654321",
     )
 
-    # Mock the certificate retrieval for each neuron
-    def mock_get_certificate(netuid, hotkey, block_hash=None):
-        if hotkey == "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM":
-            return mock_cert1
-        elif hotkey == "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH":
-            return mock_cert2
-        return None
+    # Mock the fetch method that returns list of tuples in format: [((netuid, hotkey), certificate), ...]
+    mock_certificates = [
+        (("netuid", "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM"), mock_cert1),
+        (("netuid", "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH"), mock_cert2),
+    ]
 
-    mocked_subtensor.subtensor_module.NeuronCertificates.get.side_effect = mock_get_certificate
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.return_value = mock_certificates
 
     subnet = await bittensor.subnet(1).get()
     certificates = await subnet.neurons.get_certificates()
 
-    # Verify the result
+    # Verify the result - public_key should have "0x" stripped
     expected_certificates = {
-        "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": mock_cert1,
-        "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH": mock_cert2,
+        "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": NeuronCertificate(
+            algorithm=CertificateAlgorithm.ED25519,
+            public_key="1234567890abcdef",
+        ),
+        "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH": NeuronCertificate(
+            algorithm=CertificateAlgorithm.ED25519,
+            public_key="fedcba0987654321",
+        ),
     }
 
     assert certificates == expected_certificates
@@ -525,66 +451,32 @@ async def test_get_certificates(mocked_subtensor, bittensor):
 
 @pytest.mark.asyncio
 async def test_get_certificates_with_block_hash(mocked_subtensor, bittensor):
-    # Mock neurons data
-    mocked_subtensor.neuron_info.get_neurons_lite.return_value = [
-        {
-            "hotkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
-            "coldkey": "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
-            "uid": 0,
-            "netuid": 1,
-            "active": True,
-            "axon_info": {
-                "block": 0,
-                "version": 0,
-                "ip": 0,
-                "port": 0,
-                "ip_type": 0,
-                "protocol": 0,
-                "placeholder1": 0,
-                "placeholder2": 0,
-            },
-            "prometheus_info": {
-                "block": 0,
-                "version": 0,
-                "ip": 0,
-                "port": 0,
-                "ip_type": 0,
-            },
-            "stake": {
-                "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": 1000000000,
-            },
-            "rank": 0,
-            "emission": 0,
-            "incentive": 0,
-            "consensus": 0,
-            "trust": 0,
-            "validator_trust": 0,
-            "dividends": 0,
-            "last_update": 0,
-            "validator_permit": False,
-            "pruning_score": 0,
-        },
-    ]
-
     mock_cert = NeuronCertificate(
         algorithm=CertificateAlgorithm.ED25519,
         public_key="0x1234567890abcdef",
     )
 
-    mocked_subtensor.subtensor_module.NeuronCertificates.get.return_value = mock_cert
+    # Mock the fetch method that returns list of tuples in format: [((netuid, hotkey), certificate), ...]
+    mock_certificates = [
+        (("netuid", "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM"), mock_cert),
+    ]
+
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.return_value = mock_certificates
 
     subnet = await bittensor.subnet(1).get()
     block_hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
     certificates = await subnet.neurons.get_certificates(block_hash=block_hash)
 
-    # Verify that get_certificates was called with the block_hash
-    mocked_subtensor.neuron_info.get_neurons_lite.assert_called_with(1, block_hash=block_hash)
-    mocked_subtensor.subtensor_module.NeuronCertificates.get.assert_called_with(
-        1, "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM", block_hash=block_hash
+    # Verify that fetch was called with the block_hash
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.assert_called_with(
+        1, block_hash=block_hash
     )
 
     expected_certificates = {
-        "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": mock_cert,
+        "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": NeuronCertificate(
+            algorithm=CertificateAlgorithm.ED25519,
+            public_key="1234567890abcdef",  # "0x" prefix stripped
+        ),
     }
 
     assert certificates == expected_certificates
@@ -592,8 +484,8 @@ async def test_get_certificates_with_block_hash(mocked_subtensor, bittensor):
 
 @pytest.mark.asyncio
 async def test_get_certificates_empty_neurons(mocked_subtensor, bittensor):
-    # Mock empty neurons list
-    mocked_subtensor.neuron_info.get_neurons_lite.return_value = []
+    # Mock empty certificates list from fetch
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.return_value = []
 
     subnet = await bittensor.subnet(1).get()
     certificates = await subnet.neurons.get_certificates()

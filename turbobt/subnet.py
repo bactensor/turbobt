@@ -178,9 +178,18 @@ class SubnetNeurons:
             await extrinsic.wait_for_finalization()
 
     async def get_certificates(self, block_hash: str | None = None) -> dict[HotKey, NeuronCertificate]:
+        def strip_0x(certificate: NeuronCertificate) -> NeuronCertificate:
+            certificate["public_key"] = certificate["public_key"].strip("0x")
+            return certificate
+
+        certificates = await self.subnet.client.subtensor.subtensor_module.NeuronCertificates.fetch(
+            self.subnet.netuid,
+            block_hash=block_hash,
+        )
+
         return {
-            neuron.hotkey: await self[neuron.hotkey].get_certificate(block_hash)
-            for neuron in await self.all(block_hash)
+            elem[0][1]: strip_0x(elem[1])
+            for elem in certificates
         }
 
     async def generate_certificate_keypair(
