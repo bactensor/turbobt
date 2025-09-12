@@ -146,3 +146,6 @@ class CacheTransport(BaseTransport):
 
     def unsubscribe(self, subscription_id) -> asyncio.Queue | None:
         return self._transport.unsubscribe(subscription_id)
+
+    async def close(self):
+        await self._transport.close()

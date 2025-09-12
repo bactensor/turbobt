@@ -128,13 +128,17 @@ class SubnetNeurons:
         timeout: float | None = None,
         wallet: bittensor_wallet.Wallet | None = None,
     ) -> None:
-        # TODO netuid = 0
-
-        extrinsic = await self.subnet.client.subtensor.subtensor_module.burned_register(
-            netuid=self.subnet.netuid,
-            hotkey=hotkey.ss58_address,
-            wallet=wallet or self.subnet.client.wallet,
-        )
+        if self.subnet.netuid == 0:
+            extrinsic = await self.subnet.client.subtensor.subtensor_module.root_register(
+                hotkey=hotkey.ss58_address,
+                wallet=wallet or self.subnet.client.wallet,
+            )
+        else:
+            extrinsic = await self.subnet.client.subtensor.subtensor_module.burned_register(
+                netuid=self.subnet.netuid,
+                hotkey=hotkey.ss58_address,
+                wallet=wallet or self.subnet.client.wallet,
+            )
 
         async with asyncio.timeout(timeout):
             await extrinsic.wait_for_finalization()
@@ -374,7 +378,7 @@ class SubnetWeights:
             tuple[bytes, int],
         ],
     ]:
-        weights = await self.client.subtensor.subtensor_module.CRV3WeightCommitsV2.fetch(
+        weights = await self.client.subtensor.subtensor_module.TimelockedWeightCommits.fetch(
             self.subnet.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
@@ -540,7 +544,7 @@ class Subnets:
         return SubnetReference(netuid, self.client)
 
     async def count(self):
-        return await self.client.subtensor.get_total_subnets()
+        return await self.client.subtensor.subtensor_module.TotalNetworks.get()
 
     async def get(self, netuid):
         return Subnet(netuid, self._subtensor)

@@ -97,6 +97,35 @@ async def test_get_by_hotkey_not_exist(mocked_subtensor, bittensor):
 
 
 @pytest.mark.asyncio
+async def test_add_stake(mocked_subtensor, bittensor, alice_wallet):
+    subnet = bittensor.subnet(1)
+    neuron = subnet.neurons["5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM"]
+
+    await neuron.add_stake(1_000_000_000)
+
+    mocked_subtensor.subtensor_module.add_stake.assert_awaited_once_with(
+        netuid=1,
+        hotkey="5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
+        amount_staked=1_000_000_000,
+        wallet=alice_wallet,
+    )
+
+
+@pytest.mark.asyncio
+async def test_remove_stake(mocked_subtensor, bittensor, alice_wallet):
+    subnet = bittensor.subnet(1)
+    neuron = subnet.neurons["5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM"]
+
+    await neuron.remove_stake(1_000_000_000)
+
+    mocked_subtensor.subtensor_module.remove_stake.assert_awaited_once_with(
+        netuid=1,
+        hotkey="5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM",
+        amount_unstaked=1_000_000_000,
+        wallet=alice_wallet,
+    )
+
+@pytest.mark.asyncio
 async def test_get_certificate_success(mocked_subtensor, bittensor):
     # Mock certificate data
     mock_certificate = {

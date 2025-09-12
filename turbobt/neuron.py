@@ -5,6 +5,8 @@ import enum
 import ipaddress
 import typing
 
+import bittensor_wallet
+
 from turbobt.block import get_ctx_block_hash
 
 from .substrate._scalecodec import u16_proportion_to_float
@@ -127,6 +129,19 @@ class NeuronReference:
     uid: int | None = None
     hotkey: str | None = None
 
+    async def add_stake(
+        self,
+        amount: int,
+        wallet: bittensor_wallet.Wallet | None = None,
+    ) -> None:
+        extrinsic = await self.subnet.client.subtensor.subtensor_module.add_stake(
+            netuid=self.subnet.netuid,
+            hotkey=self.hotkey,
+            amount_staked=amount,
+            wallet=wallet or self.subnet.client.wallet,
+        )
+        await extrinsic.wait_for_finalization()
+
     async def get(self, block_hash: str | None = None) -> Neuron | None:
         if self.uid is not None:
             uid = self.uid
@@ -171,3 +186,16 @@ class NeuronReference:
             certificate["public_key"] = certificate["public_key"].strip("0x")
 
         return certificate
+
+    async def remove_stake(
+        self,
+        amount: int,
+        wallet: bittensor_wallet.Wallet | None = None
+    ) -> None:
+        extrinsic = await self.subnet.client.subtensor.subtensor_module.remove_stake(
+            netuid=self.subnet.netuid,
+            hotkey=self.hotkey,
+            amount_unstaked=amount,
+            wallet=wallet or self.subnet.client.wallet,
+        )
+        await extrinsic.wait_for_finalization()

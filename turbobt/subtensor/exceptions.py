@@ -40,6 +40,12 @@ class HotkeyAccountDoesntExist(SubtensorException):
     """
 
 
+class HotKeyAccountNotExists(SubtensorException):
+    """
+    The hotkey does not exists
+    """
+
+
 class NotEnoughStakeToWithdraw(SubtensorException):
     """
     You do not have enough TAO equivalent stake to remove/move/transfer, including the unstake fee.
@@ -122,6 +128,12 @@ class CommitRevealDisabled(SubtensorException):
 class CommittingWeightsTooFast(SubtensorException):
     """
     A transactor exceeded the rate limit for setting weights.
+    """
+
+
+class AmountTooLow(SubtensorException):
+    """
+    Stake amount is too low.
     """
 
 

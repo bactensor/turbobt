@@ -6,7 +6,7 @@ import typing
 import bittensor_wallet
 import scalecodec
 
-from ..extrinsic import ExtrinsicResult
+from ..extrinsic import Extrinsic, ExtrinsicResult
 from ._base import Pallet
 from .state import RuntimeVersion
 
@@ -72,6 +72,11 @@ class Author(Pallet):
                 "call_args": call_args,
             }
         )
+
+        from turbobt.batch import get_ctx_batch
+
+        if get_ctx_batch() is not None:
+            return Extrinsic(call)
 
         era_obj = self.substrate._registry.create_scale_object("Era")
 

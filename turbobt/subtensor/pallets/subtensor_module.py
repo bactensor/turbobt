@@ -7,6 +7,7 @@ import typing
 import bittensor_wallet
 
 from ...substrate.extrinsic import ExtrinsicResult
+from ...substrate.pallets._types import StorageValue
 from ...substrate.pallets.author import DEFAULT_ERA, Era
 from ..types import (
     HotKey,
@@ -56,15 +57,20 @@ class SubtensorModule(Pallet):
             "SubtensorModule",
             "AssociatedEvmAddress",
         )
-        self.CRV3WeightCommitsV2 = StorageDoubleMap[NetUid, int, None](
-            subtensor,
-            "SubtensorModule",
-            "CRV3WeightCommitsV2",
-        )
         self.NeuronCertificates = StorageDoubleMap[NetUid, HotKey, NeuronCertificate](
             subtensor,
             "SubtensorModule",
             "NeuronCertificates",
+        )
+        self.TimelockedWeightCommits = StorageDoubleMap[NetUid, int, None](
+            subtensor,
+            "SubtensorModule",
+            "TimelockedWeightCommits",
+        )
+        self.TotalNetworks = StorageValue[int](
+            subtensor,
+            "SubtensorModule",
+            "TotalNetworks",
         )
         self.Uids = StorageDoubleMap[NetUid, HotKey, Uid](
             subtensor,
@@ -75,6 +81,26 @@ class SubtensorModule(Pallet):
             subtensor,
             "SubtensorModule",
             "Weights",
+        )
+
+    async def add_stake(
+        self,
+        hotkey: str,
+        netuid: int,
+        amount_staked: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "add_stake",
+            {
+                "netuid": netuid,
+                "hotkey": hotkey,
+                "amount_staked": amount_staked,
+            },
+            key=wallet.coldkey,
+            era=era,
         )
 
     async def burned_register(
@@ -163,6 +189,53 @@ class SubtensorModule(Pallet):
             {
                 "hotkey": hotkey,
                 "mechid": mechid,
+            },
+            key=wallet.coldkey,
+            era=era,
+        )
+
+    async def remove_stake(
+        self,
+        hotkey: str,
+        netuid: int,
+        amount_unstaked: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "remove_stake",
+            {
+                "amount_unstaked": amount_unstaked,
+                "hotkey": hotkey,
+                "netuid": netuid,
+            },
+            key=wallet.coldkey,
+            era=era,
+        )
+
+    async def root_register(
+        self,
+        hotkey: str,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        """
+        Registers a Neuron on the Bittensor's Root Subnet.
+
+        :param hotkey: Hotkey to be registered to the network.
+        :type hotkey: str
+        :param wallet: The wallet associated with the neuron to be registered.
+        :type wallet: bittensor_wallet.Wallet
+        :return: An asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "root_register",
+            {
+                "hotkey": hotkey,
             },
             key=wallet.coldkey,
             era=era,
