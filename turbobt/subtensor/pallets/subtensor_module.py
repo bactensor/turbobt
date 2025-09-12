@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import enum
 import ipaddress
 import typing
 
@@ -19,15 +20,27 @@ from ._types import StorageDoubleMap
 if typing.TYPE_CHECKING:
     from .. import Subtensor
 
+PrivateKey: typing.TypeAlias = str
+PublicKey: typing.TypeAlias = str
+
+
+class CertificateAlgorithm(enum.IntEnum):
+    ED25519 = 1
+    """ EdDSA using ed25519 curve """
+
+
+class NeuronCertificate(typing.TypedDict):
+    algorithm: CertificateAlgorithm
+    public_key: PublicKey
+
+
+class NeuronCertificateKeypair(NeuronCertificate):
+    private_key: PrivateKey
+
 
 class AssociatedEvmAddress(typing.NamedTuple):
     h160_address: str
     last_block: int  # last block where ownership was proven
-
-
-class NeuronCertificate(typing.TypedDict):
-    algorithm: int
-    public_key: str
 
 
 class ZippedWeights(typing.NamedTuple):
