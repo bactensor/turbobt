@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ipaddress
 import typing
+from enum import IntEnum
 
 import bittensor_wallet
 
@@ -33,6 +34,16 @@ class NeuronCertificate(typing.TypedDict):
 class ZippedWeights(typing.NamedTuple):
     uid: Uid
     weight: int
+
+
+# I'm of a strong opinion that we should have a NewType for commit reveal version.
+# However, since turbobt extensively uses primitive types, let's stick with it
+# for the time being and see what comes out of BTSDK-14
+# I'm also using an enum, because for some ungodly reason commit-reveal v3 is actually
+# identified by version number 4, and if we start using numbers directly it's all gonna
+# explode
+class CommitRevealVersion(IntEnum):
+    CRV3 = 4 # v3 is identified with 4 in SubtensorModule
 
 
 class SubtensorModule(Pallet):
@@ -131,11 +142,13 @@ class SubtensorModule(Pallet):
     ) -> ExtrinsicResult:
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
-            "commit_crv3_weights",
+            "commit_timelocked_mechanism_weights",
             {
                 "netuid": netuid,
                 "commit": f"0x{commit.hex()}",
                 "reveal_round": reveal_round,
+                "mecid": 0, # backward-compatibility
+                "commit_reveal_version": CommitRevealVersion.CRV3,
             },
             key=wallet.hotkey,
             era=era,
@@ -150,12 +163,80 @@ class SubtensorModule(Pallet):
         wallet: bittensor_wallet.Wallet,
         era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
+        """
+        Commits timelocked weights for the default mechanism (mecid 0).
+
+        This is a convenience wrapper over commit_timelocked_mechanism_weights that targets
+        mechanism_id 0 for backward compatibility.
+
+        :param netuid: Unique identifier of the subnet.
+        :type netuid: int
+        :param commit: Commitment bytes to submit (hex-encoded on chain).
+        :type commit: bytes
+        :param reveal_round: The round at which the corresponding reveal must occur.
+        :type reveal_round: int
+        :param commit_reveal_version: Commit-reveal version (e.g., 4 for CRV3). See commit_crv3_weights.
+        :type commit_reveal_version: int
+        :param wallet: Wallet whose hotkey signs the extrinsic.
+        :type wallet: bittensor_wallet.Wallet
+        :param era: Optional transaction era/mortality.
+        :type era: Era | None
+        :return: Asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
-            "commit_timelocked_weights",
+            "commit_timelocked_mechanism_weights",
             {
                 "netuid": netuid,
                 "commit": f"0x{commit.hex()}",
+                "mecid": 0, # backward compatibility
+                "reveal_round": reveal_round,
+                "commit_reveal_version": commit_reveal_version,
+            },
+            key=wallet.hotkey,
+            era=era,
+        )
+
+    async def commit_timelocked_mechanism_weights(
+        self,
+        netuid: int,
+        commit: bytes,
+        mechanism_id: int,
+        reveal_round: int,
+        commit_reveal_version: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        """
+        Commits timelocked weights for a mechanism (sub-subnet) using a commit-reveal scheme.
+
+        :param netuid: Unique identifier of the subnet.
+        :type netuid: int
+        :param commit: Commitment bytes to submit (hex-encoded on chain).
+        :type commit: bytes
+        :param mechanism_id: Mechanism (mecid) identifier within the subnet.
+        :type mechanism_id: int
+        :param reveal_round: The round at which the corresponding reveal must occur.
+        :type reveal_round: int
+        :param commit_reveal_version: Commit-reveal version (e.g., 4 for CRV3).
+        :type commit_reveal_version: int
+        :param wallet: Wallet whose hotkey signs the extrinsic.
+        :type wallet: bittensor_wallet.Wallet
+        :param era: Optional transaction era/mortality.
+        :type era: Era | None
+        :return: Asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "commit_timelocked_mechanism_weights",
+            {
+                "netuid": netuid,
+                "commit": f"0x{commit.hex()}",
+                "mecid": mechanism_id,
                 "reveal_round": reveal_round,
                 "commit_reveal_version": commit_reveal_version,
             },
@@ -347,12 +428,81 @@ class SubtensorModule(Pallet):
         wallet: bittensor_wallet.Wallet,
         era: Era | None = DEFAULT_ERA,
     ) -> ExtrinsicResult:
+        """
+        Sets weights for the default mechanism (mecid 0) on a subnet.
+
+        This is a convenience wrapper over set_mechanism_weights that targets mechanism_id 0
+        for backward compatibility.
+
+        :param netuid: Unique identifier of the subnet.
+        :type netuid: int
+        :param dests: Destination neuron UIDs to weight.
+        :type dests: list[int]
+        :param weights: Weights corresponding to each destination UID.
+        :type weights: list[int]
+        :param version_key: Weights version key indicating encoding/version.
+        :type version_key: int
+        :param wallet: Wallet whose hotkey signs the extrinsic.
+        :type wallet: bittensor_wallet.Wallet
+        :param era: Optional transaction era/mortality.
+        :type era: Era | None
+        :return: Asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
         return await self.subtensor.author.submitAndWatchExtrinsic(
             "SubtensorModule",
-            "set_weights",
+            "set_mechanism_weights",
             {
                 "netuid": netuid,
                 "dests": dests,
+                "mecid": 0, # backward compatibility
+                "weights": weights,
+                "version_key": version_key,
+            },
+            key=wallet.hotkey,
+            era=era,
+        )
+
+
+    async def set_mechanism_weights(
+        self,
+        netuid: int,
+        dests: list[int],
+        mechanism_id: int,
+        weights: list[int],
+        version_key: int,
+        wallet: bittensor_wallet.Wallet,
+        era: Era | None = DEFAULT_ERA,
+    ) -> ExtrinsicResult:
+        """
+        Sets weights for the specified mechanism for specified neurons
+
+        :param netuid: Unique identifier of the subnet.
+        :type netuid: int
+        :param dests: Destination neuron UIDs to weight.
+        :type dests: list[int]
+        :param mechanism_id: Mechanism (mecid) identifier within the subnet.
+        :type mechanism_id: int
+        :param weights: Weights corresponding to each destination UID.
+        :type weights: list[int]
+        :param version_key: Weights version key indicating encoding/version.
+        :type version_key: int
+        :param wallet: Wallet whose hotkey signs the extrinsic.
+        :type wallet: bittensor_wallet.Wallet
+        :param era: Optional transaction era/mortality.
+        :type era: Era | None
+        :return: Asynchronous result of the extrinsic submission.
+        :rtype: ExtrinsicResult
+        """
+
+        return await self.subtensor.author.submitAndWatchExtrinsic(
+            "SubtensorModule",
+            "set_mechanism_weights",
+            {
+                "netuid": netuid,
+                "dests": dests,
+                "mecid": mechanism_id,
                 "weights": weights,
                 "version_key": version_key,
             },

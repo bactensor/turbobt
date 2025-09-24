@@ -1,5 +1,7 @@
 import pytest
 
+from turbobt.subtensor.pallets.subtensor_module import CommitRevealVersion
+
 
 @pytest.mark.asyncio
 async def test_burned_register(subtensor, alice_wallet):
@@ -34,11 +36,13 @@ async def test_commit_crv3_weights(subtensor, alice_wallet):
 
     subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
         "SubtensorModule",
-        "commit_crv3_weights",
+        "commit_timelocked_mechanism_weights",
         {
             "netuid": 1,
             "commit": "0x54455354",
+            "mecid": 0,
             "reveal_round": 204,
+            "commit_reveal_version": CommitRevealVersion.CRV3,
         },
         era=None,
         key=alice_wallet.coldkey,
@@ -58,11 +62,39 @@ async def test_commit_timelocked_weights(subtensor, alice_wallet):
 
     subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
         "SubtensorModule",
-        "commit_timelocked_weights",
+        "commit_timelocked_mechanism_weights",
         {
             "netuid": 1,
             "commit": "0x54455354",
             "reveal_round": 204,
+            "mecid": 0,
+            "commit_reveal_version": 4,
+        },
+        era=None,
+        key=alice_wallet.coldkey,
+    )
+
+
+@pytest.mark.asyncio
+async def test_commit_timelocked_mechanism_weights(subtensor, alice_wallet):
+    await subtensor.subtensor_module.commit_timelocked_mechanism_weights(
+        netuid=1,
+        commit=b"TEST",
+        reveal_round=204,
+        mechanism_id=123,
+        commit_reveal_version=4,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "commit_timelocked_mechanism_weights",
+        {
+            "netuid": 1,
+            "commit": "0x54455354",
+            "reveal_round": 204,
+            "mecid": 123,
             "commit_reveal_version": 4,
         },
         era=None,
@@ -185,11 +217,39 @@ async def test_set_weights(subtensor, alice_wallet):
 
     subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
         "SubtensorModule",
-        "set_weights",
+        "set_mechanism_weights",
         {
             "netuid": 1,
             "dests": [0, 1],
             "weights": [0, 65535],
+            "mecid": 0,
+            "version_key": 1000,
+        },
+        era=None,
+        key=alice_wallet.hotkey,
+    )
+
+
+@pytest.mark.asyncio
+async def test_set_mechanism_weights(subtensor, alice_wallet):
+    await subtensor.subtensor_module.set_mechanism_weights(
+        netuid=1,
+        dests=[0, 1],
+        mechanism_id=123,
+        weights=[0, 65535],
+        version_key=1000,
+        era=None,
+        wallet=alice_wallet,
+    )
+
+    subtensor.author.submitAndWatchExtrinsic.assert_called_once_with(
+        "SubtensorModule",
+        "set_mechanism_weights",
+        {
+            "netuid": 1,
+            "dests": [0, 1],
+            "weights": [0, 65535],
+            "mecid": 123,
             "version_key": 1000,
         },
         era=None,
