@@ -114,6 +114,72 @@ async def test_get_subnet_hyperparams_not_found(subtensor, mocked_transport):
 
 
 @pytest.mark.asyncio
+async def test_get_subnet_hyperparams_v2(subtensor, mocked_transport):
+    mocked_transport.responses["state_call"][
+        "SubnetInfoRuntimeApi_get_subnet_hyperparams_v2"
+    ] = {
+        "result": "0x0128feff0100014000feff03009101025a620213ffffffffffffff3f0091019101214e010482841e000700e876481782ee360004c8010100025a620204019a990300cecc02000000000000e80300000800010000",
+    }
+
+    subnet_hyperparams = await subtensor.subnet_info.get_subnet_hyperparams_v2(
+        netuid=1,
+    )
+
+    assert subnet_hyperparams == {
+        "rho": 10,
+        "kappa": 32767,
+        "immunity_period": 4096,
+        "min_allowed_weights": 0,
+        "max_weights_limit": 65535,
+        "tempo": 100,
+        "min_difficulty": 10_000_000,
+        "max_difficulty": 4_611_686_018_427_387_903,
+        "weights_version": 0,
+        "weights_rate_limit": 100,
+        "adjustment_interval": 100,
+        "activity_cutoff": 5000,
+        "registration_allowed": True,
+        "target_regs_per_interval": 1,
+        "min_burn": 500_000,
+        "max_burn": 100_000_000_000,
+        "bonds_moving_avg": 900_000,
+        "max_regs_per_block": 1,
+        "serving_rate_limit": 50,
+        "max_validators": 64,
+        "adjustment_alpha": 0,
+        "difficulty": 10_000_000,
+        "commit_reveal_period": 1,
+        "commit_reveal_weights_enabled": True,
+        "alpha_high": 58_982,
+        "alpha_low": 45_875,
+        "liquid_alpha_enabled": False,
+        "alpha_sigmoid_steepness": {
+            "bits": 4_294_967_296_000,
+        },
+        "yuma_version": 2,
+        "subnet_is_active": False,
+        "transfers_enabled": True,
+        "bonds_reset_enabled": False,
+        "user_liquidity_enabled": False,
+    }
+
+
+@pytest.mark.asyncio
+async def test_get_subnet_hyperparams_v2_not_found(subtensor, mocked_transport):
+    mocked_transport.responses["state_call"][
+        "SubnetInfoRuntimeApi_get_subnet_hyperparams_v2"
+    ] = {
+        "result": "0x00",
+    }
+
+    subnet_hyperparams = await subtensor.subnet_info.get_subnet_hyperparams_v2(
+        netuid=404,
+    )
+
+    assert subnet_hyperparams is None
+
+
+@pytest.mark.asyncio
 async def test_get_subnet_state(subtensor, mocked_transport):
     mocked_transport.responses["state_call"][
         "SubnetInfoRuntimeApi_get_subnet_state"

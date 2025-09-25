@@ -10,6 +10,7 @@ import scalecodec.utils.ss58
 
 from turbobt.subtensor.runtime.subnet_info import (
     SubnetHyperparams,
+    SubnetHyperparamsV2,
     SubnetState,
 )
 from turbobt.subtensor.types import HotKey, Uid
@@ -405,6 +406,12 @@ class SubnetReference:
 
     async def get_hyperparameters(self, block_hash: str | None = None) -> SubnetHyperparams | None:
         return await self.client.subtensor.subnet_info.get_subnet_hyperparams(
+            self.netuid,
+            block_hash=block_hash or get_ctx_block_hash(),
+        )
+
+    async def get_hyperparameters_v2(self, block_hash: str | None = None) -> SubnetHyperparamsV2 | None:
+        return await self.client.subtensor.subnet_info.get_subnet_hyperparams_v2(
             self.netuid,
             block_hash=block_hash or get_ctx_block_hash(),
         )
