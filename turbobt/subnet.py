@@ -7,6 +7,8 @@ import typing
 import bittensor_drand
 import bittensor_wallet
 import scalecodec.utils.ss58
+from ecies.config import EllipticCurve
+from ecies.keys import PrivateKey as EciesPrivateKey
 
 from turbobt.subtensor.runtime.subnet_info import (
     SubnetHyperparams,
@@ -23,6 +25,11 @@ from .neuron import (
 from .substrate._scalecodec import (
     float_to_u16_proportion,
     u16_proportion_to_float,
+)
+from .subtensor.pallets.subtensor_module import (
+    CertificateAlgorithm,
+    NeuronCertificate,
+    NeuronCertificateKeypair,
 )
 
 if typing.TYPE_CHECKING:
@@ -140,11 +147,14 @@ class SubnetNeurons:
         self,
         ip: str,
         port: int,
-        certificate: bytes | None = None,
+        certificate: NeuronCertificate | bytes | None = None,
         timeout: float | None = None,
         wallet: bittensor_wallet.Wallet | None = None,
     ):
         if certificate:
+            if not isinstance(certificate, bytes):
+                certificate = bytes([certificate["algorithm"]]) + bytes.fromhex(certificate["public_key"])
+
             extrinsic = await self.subnet.client.subtensor.subtensor_module.serve_axon_tls(
                 certificate=certificate,
                 ip=ip,
@@ -166,6 +176,52 @@ class SubnetNeurons:
 
         async with asyncio.timeout(timeout):
             await extrinsic.wait_for_finalization()
+
+    async def get_certificates(self, block_hash: str | None = None) -> dict[HotKey, NeuronCertificate]:
+        def strip_0x(certificate: NeuronCertificate) -> NeuronCertificate:
+            certificate["public_key"] = certificate["public_key"].strip("0x")
+            return certificate
+
+        certificates = await self.subnet.client.subtensor.subtensor_module.NeuronCertificates.fetch(
+            self.subnet.netuid,
+            block_hash=block_hash,
+        )
+
+        return {
+            elem[0][1]: strip_0x(elem[1])
+            for elem in certificates
+        }
+
+    async def generate_certificate_keypair(
+        self,
+        algorithm: CertificateAlgorithm = CertificateAlgorithm.ED25519,
+        timeout: float | None = None,
+    ) -> NeuronCertificateKeypair | None:
+        neuron = await self.subnet.get_neuron(self.subnet.client.wallet.hotkey.ss58_address)
+        if neuron is None:
+            return None
+
+        curve = typing.cast(EllipticCurve, algorithm.name.lower())
+        private_key = EciesPrivateKey(curve)
+        private_key_hex = private_key.to_hex()
+        public_key_hex = private_key.public_key.to_hex()
+        certificate = NeuronCertificate(
+            algorithm=algorithm,
+            public_key=public_key_hex,
+        )
+
+        await self.serve(
+            str(neuron.axon_info.ip),
+            neuron.axon_info.port,
+            certificate=certificate,
+            timeout=timeout,
+        )
+
+        return NeuronCertificateKeypair(
+            algorithm=algorithm,
+            public_key=public_key_hex,
+            private_key=private_key_hex,
+        )
 
     async def all(self, block_hash: str | None = None) -> list[Neuron]:
         neurons = await self.subnet.client.subtensor.neuron_info.get_neurons_lite(

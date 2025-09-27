@@ -4,6 +4,10 @@ import pytest
 
 from turbobt.neuron import AxonInfo, Neuron, PrometheusInfo
 from turbobt.subnet import Subnet, SubnetReference
+from turbobt.subtensor.pallets.subtensor_module import (
+    CertificateAlgorithm,
+    NeuronCertificate,
+)
 
 
 @pytest.mark.asyncio
@@ -405,3 +409,164 @@ async def test_register_subnet(mocked_subtensor, bittensor, alice_wallet):
         mechid=1,
         wallet=alice_wallet,
     )
+
+
+@pytest.mark.asyncio
+async def test_get_certificates(mocked_subtensor, bittensor):
+    # Mock certificate data for each neuron
+    mock_cert1 = NeuronCertificate(
+        algorithm=CertificateAlgorithm.ED25519,
+        public_key="0x1234567890abcdef",
+    )
+    mock_cert2 = NeuronCertificate(
+        algorithm=CertificateAlgorithm.ED25519,
+        public_key="0xfedcba0987654321",
+    )
+
+    # Mock the fetch method that returns list of tuples in format: [((netuid, hotkey), certificate), ...]
+    mock_certificates = [
+        (("netuid", "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM"), mock_cert1),
+        (("netuid", "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH"), mock_cert2),
+    ]
+
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.return_value = mock_certificates
+
+    subnet = await bittensor.subnet(1).get()
+    certificates = await subnet.neurons.get_certificates()
+
+    # Verify the result - public_key should have "0x" stripped
+    expected_certificates = {
+        "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": NeuronCertificate(
+            algorithm=CertificateAlgorithm.ED25519,
+            public_key="1234567890abcdef",
+        ),
+        "5D34dL5prEUaGNQtPPZ3yN5Y6BnkfXunKXXz6fo7ZJbLwRRH": NeuronCertificate(
+            algorithm=CertificateAlgorithm.ED25519,
+            public_key="fedcba0987654321",
+        ),
+    }
+
+    assert certificates == expected_certificates
+
+
+@pytest.mark.asyncio
+async def test_get_certificates_with_block_hash(mocked_subtensor, bittensor):
+    mock_cert = NeuronCertificate(
+        algorithm=CertificateAlgorithm.ED25519,
+        public_key="0x1234567890abcdef",
+    )
+
+    # Mock the fetch method that returns list of tuples in format: [((netuid, hotkey), certificate), ...]
+    mock_certificates = [
+        (("netuid", "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM"), mock_cert),
+    ]
+
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.return_value = mock_certificates
+
+    subnet = await bittensor.subnet(1).get()
+    block_hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+    certificates = await subnet.neurons.get_certificates(block_hash=block_hash)
+
+    # Verify that fetch was called with the block_hash
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.assert_called_with(
+        1, block_hash=block_hash
+    )
+
+    expected_certificates = {
+        "5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM": NeuronCertificate(
+            algorithm=CertificateAlgorithm.ED25519,
+            public_key="1234567890abcdef",  # "0x" prefix stripped
+        ),
+    }
+
+    assert certificates == expected_certificates
+
+
+@pytest.mark.asyncio
+async def test_get_certificates_empty_neurons(mocked_subtensor, bittensor):
+    # Mock empty certificates list from fetch
+    mocked_subtensor.subtensor_module.NeuronCertificates.fetch.return_value = []
+
+    subnet = await bittensor.subnet(1).get()
+    certificates = await subnet.neurons.get_certificates()
+
+    assert certificates == {}
+
+
+@pytest.mark.asyncio
+async def test_generate_certificate_keypair_success(mocker, mocked_subtensor, bittensor, alice_wallet, neuron):
+    subnet = await bittensor.subnet(1).get()
+    
+    # Mock the subnet.get_neuron method
+    mock_get_neuron = mocker.patch.object(
+        subnet, 'get_neuron', return_value=neuron
+    )
+    # Mock the serve method to avoid actual serving
+    mock_serve = mocker.patch.object(
+        subnet.neurons, 'serve', new_callable=mocker.AsyncMock
+    )
+    
+    keypair = await subnet.neurons.generate_certificate_keypair()
+
+    # Verify that get_neuron was called with the alice_wallet's ss58_address
+    mock_get_neuron.assert_called_once_with(alice_wallet.hotkey.ss58_address)
+
+    # Verify that serve was called with the certificate
+    mock_serve.assert_called_once()
+    call_args = mock_serve.call_args
+    assert call_args[0][0] == "192.168.1.1"  # ip
+    assert call_args[0][1] == 8080  # port
+    assert "certificate" in call_args[1]
+    assert call_args[1]["timeout"] is None
+
+    # Verify the returned keypair structure
+    assert isinstance(keypair, dict)
+    assert "algorithm" in keypair
+    assert "public_key" in keypair
+    assert "private_key" in keypair
+    assert keypair["algorithm"] == CertificateAlgorithm.ED25519
+
+
+@pytest.mark.asyncio
+async def test_generate_certificate_keypair_with_custom_algorithm(mocker, mocked_subtensor, bittensor, alice_wallet, neuron):
+    subnet = await bittensor.subnet(1).get()
+    
+    # Mock the subnet.get_neuron method
+    mocker.patch.object(
+        subnet, 'get_neuron', return_value=neuron
+    )
+    # Mock the serve method to avoid actual serving
+    mock_serve = mocker.patch.object(
+        subnet.neurons, 'serve', new_callable=mocker.AsyncMock
+    )
+    
+    keypair = await subnet.neurons.generate_certificate_keypair(
+        algorithm=CertificateAlgorithm.ED25519,
+        timeout=30.0
+    )
+
+    # Verify that serve was called with the timeout
+    mock_serve.assert_called_once()
+    call_args = mock_serve.call_args
+    assert call_args[1]["timeout"] == 30.0
+
+    # Verify the algorithm in the returned keypair
+    assert keypair["algorithm"] == CertificateAlgorithm.ED25519
+
+
+@pytest.mark.asyncio
+async def test_generate_certificate_keypair_neuron_not_found(mocker, mocked_subtensor, bittensor, alice_wallet):
+    subnet = await bittensor.subnet(1).get()
+    
+    # Mock the subnet.get_neuron method to return None
+    mock_get_neuron = mocker.patch.object(
+        subnet, 'get_neuron', return_value=None
+    )
+    
+    keypair = await subnet.neurons.generate_certificate_keypair()
+
+    # Verify that get_neuron was called with alice_wallet's ss58_address
+    mock_get_neuron.assert_called_once_with(alice_wallet.hotkey.ss58_address)
+
+    # Verify that None is returned when neuron is not found
+    assert keypair is None
