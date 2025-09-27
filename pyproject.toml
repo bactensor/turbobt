@@ -6,15 +6,20 @@ build-backend = "hatchling.build"
 name = "turbobt"
 description = "A next generation Bittensor SDK, for Python 3."
 readme = "README.md"
-requires-python = ">=3.11"
+authors = [
+    { name = "Reef Technologies", email = "opensource@reef.pl" }
+]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Framework :: AsyncIO",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
+requires-python = ">=3.11"
 dependencies = [
     "bittensor-drand~=1.0.0",
     "bittensor-wallet~=4.0.0",
@@ -26,9 +31,7 @@ dependencies = [
 ]
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
-dynamic = [
-    "version",
-]
+dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://github.com/bactensor/turbobt"
@@ -43,15 +46,15 @@ dev = [
     "ruff",
 ]
 
+[tool.hatch.version]
+path = "turbobt/__version__.py"
+
 [tool.hatch.build.targets.sdist]
 include = [
     "/README.md",
     "/tests",
     "/turbobt",
 ]
-
-[tool.hatch.version]
-path = "turbobt/__version__.py"
 
 [tool.ruff.lint]
 # TODO add D
