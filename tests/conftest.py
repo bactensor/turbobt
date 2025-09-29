@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import unittest.mock
 
@@ -36,13 +37,17 @@ def alice_wallet():
 
 @pytest_asyncio.fixture(scope="session")
 async def metadata():
-    with open("tests/test_substrate/data/metadata_at_version.json") as data:
+    base_dir = os.path.dirname(__file__)
+    path = os.path.join(base_dir, "test_substrate/data/metadata_version_15.json")
+    with open(path) as data:
         return json.load(data)
 
 
 @pytest_asyncio.fixture(scope="session")
 async def runtime():
-    with open("tests/test_substrate/data/runtimeVersion.json") as data:
+    base_dir = os.path.dirname(__file__)
+    path = os.path.join(base_dir, "test_substrate/data/runtime_version_318.json")
+    with open(path) as data:
         return json.load(data)
 
 
