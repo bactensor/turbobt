@@ -103,6 +103,88 @@ async def test_get_hyperparameters(mocked_subtensor, bittensor):
 
 
 @pytest.mark.asyncio
+async def test_get_hyperparameters_v2(mocked_subtensor, bittensor):
+    mocked_subtensor.subnet_info.get_subnet_hyperparams_v2.return_value = {
+        "rho": 10,
+        "kappa": 32767,
+        "immunity_period": 4096,
+        "min_allowed_weights": 0,
+        "max_weights_limit": 65535,
+        "tempo": 100,
+        "min_difficulty": 10_000_000,
+        "max_difficulty": 4_611_686_018_427_387_903,
+        "weights_version": 0,
+        "weights_rate_limit": 100,
+        "adjustment_interval": 100,
+        "activity_cutoff": 5000,
+        "registration_allowed": True,
+        "target_regs_per_interval": 2,
+        "min_burn": 500_000,
+        "max_burn": 100_000_000_000,
+        "bonds_moving_avg": 900_000,
+        "max_regs_per_block": 1,
+        "serving_rate_limit": 50,
+        "max_validators": 64,
+        "adjustment_alpha": 0,
+        "difficulty": 10_000_000,
+        "commit_reveal_period": 1,
+        "commit_reveal_weights_enabled": False,
+        "alpha_high": 58_982,
+        "alpha_low": 45_875,
+        "liquid_alpha_enabled": False,
+        "alpha_sigmoid_steepness": {
+            "bits": 4_294_967_296_000,
+        },
+        "yuma_version": 1,
+        "subnet_is_active": True,
+        "transfers_enabled": True,
+        "bonds_reset_enabled": False,
+        "user_liquidity_enabled": False,
+    }
+
+    subnet_ref = bittensor.subnet(1)
+    subnet_hyperparameters = await subnet_ref.get_hyperparameters_v2()
+
+    assert subnet_hyperparameters == {
+        "rho": 10,
+        "kappa": 32767,
+        "immunity_period": 4096,
+        "min_allowed_weights": 0,
+        "max_weights_limit": 65535,
+        "tempo": 100,
+        "min_difficulty": 10_000_000,
+        "max_difficulty": 4_611_686_018_427_387_903,
+        "weights_version": 0,
+        "weights_rate_limit": 100,
+        "adjustment_interval": 100,
+        "activity_cutoff": 5000,
+        "registration_allowed": True,
+        "target_regs_per_interval": 2,
+        "min_burn": 500_000,
+        "max_burn": 100_000_000_000,
+        "bonds_moving_avg": 900_000,
+        "max_regs_per_block": 1,
+        "serving_rate_limit": 50,
+        "max_validators": 64,
+        "adjustment_alpha": 0,
+        "difficulty": 10_000_000,
+        "commit_reveal_period": 1,
+        "commit_reveal_weights_enabled": False,
+        "alpha_high": 58_982,
+        "alpha_low": 45_875,
+        "liquid_alpha_enabled": False,
+        "alpha_sigmoid_steepness": {
+            "bits": 4_294_967_296_000,
+        },
+        "yuma_version": 1,
+        "subnet_is_active": True,
+        "transfers_enabled": True,
+        "bonds_reset_enabled": False,
+        "user_liquidity_enabled": False,
+    }
+
+
+@pytest.mark.asyncio
 async def test_get_state(mocked_subtensor, bittensor):
     mocked_subtensor.subnet_info.get_subnet_state.return_value = {
         "active": [True],

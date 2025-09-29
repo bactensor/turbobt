@@ -20,6 +20,11 @@ class SubnetHyperparams(typing.TypedDict):
     # ...
 
 
+class SubnetHyperparamsV2(typing.TypedDict):
+    max_weights_limit: int
+    # ...
+
+
 class SubnetState(typing.TypedDict):
     hotkeys: list[str]
     coldkeys: list[str]
@@ -82,6 +87,34 @@ class SubnetInfoRuntimeApi(RuntimeApi):
         hyperparameters = await self.subtensor.api_call(
             "SubnetInfoRuntimeApi",
             "get_subnet_hyperparams",
+            netuid=netuid,
+            block_hash=block_hash,
+        )
+
+        if not hyperparameters:
+            return None
+
+        return hyperparameters
+
+    async def get_subnet_hyperparams_v2(
+        self,
+        netuid: int,
+        block_hash=None,
+    ) -> SubnetHyperparamsV2 | None:
+        """
+        Fetches hyperparameters version 2 of a subnet.
+
+        :param netuid: The unique identifier of the subnet.
+        :type netuid: int
+        :param block_hash: Optional block hash to query the subnet state at a specific block.
+        :type block_hash: str, optional
+        :return: A dictionary containing hyperparameters of the subnet, or None if no subnet is found.
+        :rtype: SubnetHyperparamsV2 | None
+        """
+
+        hyperparameters = await self.subtensor.api_call(
+            "SubnetInfoRuntimeApi",
+            "get_subnet_hyperparams_v2",
             netuid=netuid,
             block_hash=block_hash,
         )
