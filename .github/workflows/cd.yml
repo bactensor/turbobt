@@ -14,49 +14,64 @@ permissions:
   contents: read
 
 jobs:
-  release-build:
+  # Job to get version from tag
+  get-version:
     runs-on: ubuntu-latest
+    outputs:
+      draft: ${{ steps.get-version.outputs.draft }}
+    defaults:
+      run:
+        working-directory: ./turbobt
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get version from tag
+        id: get-version
+        run: |
+          if [[ ${{ github.ref }} == refs/tags/v* ]]; then
+              echo "draft=false" >> "$GITHUB_OUTPUT"
+          else
+              echo "draft=true" >> "$GITHUB_OUTPUT"
+          fi
 
+  # Job for Python package publishing
+  publish-python:
+    needs: get-version
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      id-token: write  # allows publishing to PyPI
+      contents: write  # allows uploading a GitHub release
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: astral-sh/setup-uv@v6
-
-      - name: Build release distributions
-        run: run build
-
-      - name: Upload distributions
-        uses: actions/upload-artifact@v4
+      - name: Set up Python ${{ env.PYTHON_DEFAULT_VERSION }}
+        uses: actions/setup-python@v5
         with:
-          name: release-dists
-          path: dist/
+          python-version: ${{ env.PYTHON_DEFAULT_VERSION }}
 
-  pypi-publish:
-    runs-on: ubuntu-latest
-
-    needs:
-      - release-build
-
-    environment:
-      name: testpypi
-      url: https://test.pypi.org/p/turbobt
-
-    permissions:
-      id-token: write
-
-    steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
-          name: release-dists
-          path: dist/
+          version: "0.8.x"
+          enable-cache: true
 
-      # - name: Publish package distributions to TestPyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     repository-url: https://test.pypi.org/legacy/
+      - name: Build
+        run: uv build
 
-      - name: Publish package distributions to PyPI
+      - name: Publish distribution 📦 to TestPyPI
+        if: ${{ needs.get-version.outputs.draft == 'true' }}
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist/
+
+      - name: Publish distribution 📦 to PyPI
+        if: ${{ needs.get-version.outputs.draft == 'false' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

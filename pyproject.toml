@@ -1,7 +1,3 @@
-[build-system]
-requires = ["hatchling >= 1.26"]
-build-backend = "hatchling.build"
-
 [project]
 name = "turbobt"
 description = "A next generation Bittensor SDK, for Python 3."
@@ -46,15 +42,25 @@ dev = [
     "ruff",
 ]
 
-[tool.hatch.version]
-path = "turbobt/__version__.py"
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/README.md",
-    "/tests",
-    "/turbobt",
+[build-system]
+requires = [
+    "pdm-backend~=2.4",
+    "setuptools-scm~=9.0",
 ]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+includes = ["turbobt"]
+
+
+[tool.pdm.version]
+# Use Git tags to determine the version
+source = "scm"
+
+
 
 [tool.ruff.lint]
 # TODO add D
