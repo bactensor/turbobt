@@ -38,9 +38,6 @@ jobs:
   # Job for Python package publishing
   publish-python:
     needs: get-version
-    defaults:
-      run:
-        working-directory: ./turbobt
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
