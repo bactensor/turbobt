@@ -19,9 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       draft: ${{ steps.get-version.outputs.draft }}
-    defaults:
-      run:
-        working-directory: ./turbobt
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,9 +35,6 @@ jobs:
   # Job for Python package publishing
   publish-python:
     needs: get-version
-    defaults:
-      run:
-        working-directory: ./turbobt
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
