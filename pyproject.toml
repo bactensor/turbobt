@@ -43,7 +43,10 @@ dev = [
 ]
 
 [build-system]
-requires = ["pdm-backend==2.4.3"]
+requires = [
+    "pdm-backend==2.4.3",
+    "setuptools-scm>=8",
+]
 build-backend = "pdm.backend"
 
 [tool.pdm]
@@ -51,6 +54,12 @@ distribution = true
 
 [tool.pdm.build]
 includes = ["turbobt"]
+
+
+[tool.pdm.version]
+# Use Git tags to determine the version
+source = "scm"
+
 
 
 [tool.ruff.lint]
